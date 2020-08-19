@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using TrashCollection.Data;
+using TrashCollection.Models;
 
 namespace TrashCollection.Areas.Identity.Pages.Account
 {
@@ -41,6 +43,7 @@ namespace TrashCollection.Areas.Identity.Pages.Account
 
         [BindProperty]
         public InputModel Input { get; set; }
+        
         public SelectList Roles { get; set; }
 
         public string ReturnUrl { get; set; }
@@ -66,6 +69,7 @@ namespace TrashCollection.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required]
+            [Display(Name = "Account Type")]
             public string Role{ get; set; }
         }
 
@@ -73,6 +77,13 @@ namespace TrashCollection.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            var roles = _roleManager.Roles;
+            Roles = new SelectList(roles, "Name", "Name");
+        }
+
+        // Temp hotfix for incorrect entry and losing SelectList entries.
+        public void RegisterReload()
+        {
             var roles = _roleManager.Roles;
             Roles = new SelectList(roles, "Name", "Name");
         }
@@ -111,6 +122,7 @@ namespace TrashCollection.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        
                         return LocalRedirect(returnUrl);
                     }
                 }
@@ -123,5 +135,7 @@ namespace TrashCollection.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+
+
     }
 }
