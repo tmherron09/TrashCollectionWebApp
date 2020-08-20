@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TrashCollection.Migrations
 {
-    public partial class UpdateModelAfterNuke : Migration
+    public partial class UpdateEmployeeModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -188,9 +188,11 @@ namespace TrashCollection.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(nullable: true),
-                    FamilyName = table.Column<string>(nullable: true),
-                    ZipCode = table.Column<string>(nullable: true),
+                    FirstName = table.Column<string>(nullable: false),
+                    FamilyName = table.Column<string>(nullable: false),
+                    EmailAddress = table.Column<string>(nullable: false),
+                    PhoneNumber = table.Column<string>(nullable: false),
+                    AssignedZipCode = table.Column<string>(nullable: true),
                     IdentityUserId = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -207,12 +209,12 @@ namespace TrashCollection.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "aa94a1b4-ac47-4ff7-9354-7aa669da2ed4", "bbe17a29-3903-46fb-9d9e-08cfb3c8a0e0", "Employee", "EMPLOYEE" });
+                values: new object[] { "1503d399-0e02-4364-b5cf-52976e38e63f", "10196d55-551e-41aa-a6b3-b2fd68ab3f87", "Employee", "EMPLOYEE" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "9d765a5e-30d9-4030-9a78-9b69338b9e39", "f0bba6d4-1176-453d-b799-8d830f351717", "Customer", "CUSTOMER" });
+                values: new object[] { "616dd616-40ba-4952-9c43-b132be65e82d", "3090e6e3-4a55-4908-b5e2-148c901011f7", "Customer", "CUSTOMER" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

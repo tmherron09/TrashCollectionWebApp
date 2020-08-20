@@ -10,8 +10,8 @@ using TrashCollection.Data;
 namespace TrashCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200820160343_UpdateModelAfterNuke")]
-    partial class UpdateModelAfterNuke
+    [Migration("20200820173307_UpdateEmployeeModelForRegistration")]
+    partial class UpdateEmployeeModelForRegistration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,15 +50,15 @@ namespace TrashCollection.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "aa94a1b4-ac47-4ff7-9354-7aa669da2ed4",
-                            ConcurrencyStamp = "bbe17a29-3903-46fb-9d9e-08cfb3c8a0e0",
+                            Id = "3455fc1c-31d7-42ce-beef-08161592d1ef",
+                            ConcurrencyStamp = "239a82bf-d168-4f2c-bc5b-7b349621631a",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "9d765a5e-30d9-4030-9a78-9b69338b9e39",
-                            ConcurrencyStamp = "f0bba6d4-1176-453d-b799-8d830f351717",
+                            Id = "1167d658-c911-488b-95c2-48bc173494f3",
+                            ConcurrencyStamp = "e50ac383-0a26-442a-b1cc-9c60891d1564",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -296,16 +296,26 @@ namespace TrashCollection.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AssignedZipCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FamilyName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdentityUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ZipCode")
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

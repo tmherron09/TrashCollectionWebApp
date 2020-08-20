@@ -48,15 +48,15 @@ namespace TrashCollection.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8beb10f2-822f-4a20-9ffe-45bad028ddfa",
-                            ConcurrencyStamp = "5322f39f-2c34-40ce-b550-8bba7ab50794",
+                            Id = "3455fc1c-31d7-42ce-beef-08161592d1ef",
+                            ConcurrencyStamp = "239a82bf-d168-4f2c-bc5b-7b349621631a",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "1d021029-1acd-4580-8ab8-6a6dbda16aaf",
-                            ConcurrencyStamp = "1aeaa94d-f685-4da6-a6b0-187a832ac397",
+                            Id = "1167d658-c911-488b-95c2-48bc173494f3",
+                            ConcurrencyStamp = "e50ac383-0a26-442a-b1cc-9c60891d1564",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -294,16 +294,26 @@ namespace TrashCollection.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AssignedZipCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("EmailAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FamilyName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("IdentityUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ZipCode")
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

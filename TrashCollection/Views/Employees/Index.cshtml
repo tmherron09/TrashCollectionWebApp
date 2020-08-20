@@ -1,0 +1,21 @@
+﻿@model TrashCollection.Models.Employee
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="jumbotron">
+    <h1>Welcome back @Html.DisplayFor(model => model.AbbrvName)</h1>
+</div>
+<div>
+    <h3>Assigned Zip Codes</h3>
+    <ul>
+        <li>
+            <h5>@Html.DisplayFor(model => model.AssignedZipCode)</h5>
+        </li>
+    </ul>
+</div>
+@*<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    
+</div>*@
