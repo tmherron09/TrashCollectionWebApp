@@ -55,7 +55,7 @@ namespace TrashCollection.Controllers
         }
 
 
-        // GET: EmployeesController
+        
         public ActionResult Index()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -64,6 +64,27 @@ namespace TrashCollection.Controllers
             {
                 return RedirectToAction("FinishRegistration");
             }
+
+            var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).Select(z => z.Address).ToList();
+            employee.Addresses = addresses;
+
+
+            return View(employee);
+        }
+        
+
+        public ActionResult IndexExpand()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+            if (employee == null)
+            {
+                return RedirectToAction("FinishRegistration");
+            }
+
+            var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).Select(z => z.Address).ToList();
+            employee.Addresses = addresses;
+
 
             return View(employee);
         }
