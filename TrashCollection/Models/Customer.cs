@@ -14,7 +14,7 @@ namespace TrashCollection.Models
 
         public Customer()
         {
-            OutstandingBalance = 0.00;
+            OutstandingBalance = TrashPrices.MonthlyFee;
             HasServiceStop = false;
         }
 
@@ -42,7 +42,9 @@ namespace TrashCollection.Models
 
 
 
-        public bool SpecialtyPickupCompleted { get; set; }
+        public bool SpecialtyPickupCompleted;
+
+        public DateTime SpecialtyPickupDay { get; set; }
 
 
 
