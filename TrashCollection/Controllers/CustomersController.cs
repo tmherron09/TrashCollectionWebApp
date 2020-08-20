@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using TrashCollection.Data;
 using TrashCollection.Models;
 
@@ -64,8 +65,8 @@ namespace TrashCollection.Controllers
 
             return View(customer);
         }
+        
 
-       
         // GET: CustomersController/Create
         public IActionResult Create()
         {
@@ -91,51 +92,50 @@ namespace TrashCollection.Controllers
         }
 
         // GET: CustomersController/Edit/5
-        public IActionResult Edit(int id)
+        public IActionResult ChangePickUpDay(int id)
         {
-            return View();
-        }
+            var customer = _context.Customers.Single(c => c.Id == id);
 
-        public IActionResult AddAccountDetails()
-        {
-            return View();
+            return View(customer);
         }
 
 
         // POST: CustomersController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, IFormCollection collection)
+        public IActionResult ChangePickUpDay(Customer customer)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+
+            Customer customerInDb = _context.Customers.Single(c => c.Id == customer.Id);
+            customerInDb.WeeklyPickupDay = customer.WeeklyPickupDay;
+            _context.SaveChanges();
+
+            ViewBag.Type = "Success!";
+            ViewBag.Message = "Weekly Trash day succesfully changed.";
+            ViewBag.HasMessage = true;
+
+            return View(nameof(Index), customerInDb);
+            //return RedirectToAction(nameof(Index));
         }
 
-        // GET: CustomersController/Delete/5
-        public IActionResult Delete(int id)
+        public IActionResult SpecialtyPickup(int id)
         {
-            return View();
-        }
+            var customer = _context.Customers.Single(c => c.Id == id);
 
-        // POST: CustomersController/Delete/5
+            return View(customer);
+        }
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id, IFormCollection collection)
+        public IActionResult SpecialtyPickup(Customer customer)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            Customer customerInDb = _context.Customers.Single(c => c.Id == customer.Id);
+            customerInDb.SpecialtyPickupDay = customer.SpecialtyPickupDay;
+            customerInDb.SpecialtyPickupCompleted = false;
+            _context.SaveChanges();
+
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }

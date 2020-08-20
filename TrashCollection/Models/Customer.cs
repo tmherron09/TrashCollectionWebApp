@@ -27,7 +27,7 @@ namespace TrashCollection.Models
         [Required(ErrorMessage = "Family/Last Name is a Required Input")]
         public string FamilyName { get; set; }
         [NotMapped]
-        public string AbbrvName { get { return FirstName + " " + FamilyName[0]; } }
+        public string AbbrvName { get { return FirstName != null ? FirstName + " " + FamilyName[0]: "unknown"; } }
         [Required(ErrorMessage = "Email is a Required Input")]
         [EmailAddress]
         [Display(Name = "Email")]

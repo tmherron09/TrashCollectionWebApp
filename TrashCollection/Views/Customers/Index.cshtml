@@ -6,7 +6,13 @@
 }
 
 <h1>Account Home</h1>
-
+@if (ViewBag.Message != null)
+{
+<div class="alert alert-success">
+    <strong>@ViewBag.MessageType</strong> @ViewBag.Message
+</div>
+}
+<span class="text-info">@ViewBag.Message</span>
 <div>
     <h4>@Html.DisplayFor(model => model.AbbrvName)</h4>
     <hr />
@@ -15,7 +21,8 @@
             @Html.DisplayNameFor(model => model.WeeklyPickupDay)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.WeeklyPickupDay)
+            <span>@Html.DisplayFor(model => model.WeeklyPickupDay)</span><br />
+            <a asp-action="ChangePickUpDay" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">Change Day</a>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CurrentBalance)
@@ -53,6 +60,8 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+
+    
+    
 </div>
