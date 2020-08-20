@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,35 +15,76 @@ namespace TrashCollection.Models
         public Customer()
         {
             OutstandingBalance = 0.00;
+            HasServiceStop = false;
         }
 
         [Key]
         public int Id { get; set; }
-        [Required]
+        [Display(Name = "First Name")]
+        [Required(ErrorMessage = "First Name is a Required Input")]
         public string FirstName { get; set; }
-        [Required]
+        [Display(Name = "Family/Last Name")]
+        [Required(ErrorMessage = "Family/Last Name is a Required Input")]
         public string FamilyName { get; set; }
-        [Required]
+        [NotMapped]
+        public string AbbrvName { get { return FirstName + " " + FamilyName[0]; } }
+        [Required(ErrorMessage = "Email is a Required Input")]
+        [EmailAddress]
+        [Display(Name = "Email")]
         public string EmailAddress { get; set; }
-        [Required]
-        public int PhoneNumber { get; set; }
+        [Display(Name = "Phone Number")]
+        [Required(ErrorMessage = "Phone Number is a Required Input")]
+        public string PhoneNumber { get; set; }
 
 
         public string WeeklyPickupDay { get; set; }
+
+
+
+
         public bool SpecialtyPickupCompleted { get; set; }
 
 
 
 
         public double OutstandingBalance { get; set; }
-
+        [NotMapped]
+        [Display(Name = "Current Balance")]
+        public string CurrentBalance
+        {
+            get
+            {
+                return OutstandingBalance.ToString("C");
+            }
+        }
 
         public string StartDate { get; set; }
         public string EndDate { get; set; }
+        [NotMapped]
+        public bool HasServiceStop
+        {
+            get
+            {
+                if ((StartDate != null && EndDate != null) || (StartDate == "" && EndDate == ""))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            set
+            {
+                return;
+            }
+        }
 
         [Required]
         public string Address { get; set; }
         [Required]
+        [RegularExpression(@"\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zip")]
+        [Display(Name = "5-Digit Zip Code")]
         public string ZipCode { get; set; }
 
 

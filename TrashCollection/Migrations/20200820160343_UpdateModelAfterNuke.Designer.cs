@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrashCollection.Data;
 
-namespace TrashCollection.Data.Migrations
+namespace TrashCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200819222818_Customer and Employee scaffold")]
-    partial class CustomerandEmployeescaffold
+    [Migration("20200820160343_UpdateModelAfterNuke")]
+    partial class UpdateModelAfterNuke
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,15 +50,15 @@ namespace TrashCollection.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2413c5cf-2ec0-45ae-ae2f-ed309360aca1",
-                            ConcurrencyStamp = "c4c20ffc-933e-431e-9c21-a209ee9637f4",
+                            Id = "aa94a1b4-ac47-4ff7-9354-7aa669da2ed4",
+                            ConcurrencyStamp = "bbe17a29-3903-46fb-9d9e-08cfb3c8a0e0",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "6a2e38b4-0dad-4a52-b0c9-ae14d798cb7f",
-                            ConcurrencyStamp = "a0f4350e-238e-4218-a91c-836ac3303c60",
+                            Id = "9d765a5e-30d9-4030-9a78-9b69338b9e39",
+                            ConcurrencyStamp = "f0bba6d4-1176-453d-b799-8d830f351717",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -265,8 +265,9 @@ namespace TrashCollection.Data.Migrations
                     b.Property<double>("OutstandingBalance")
                         .HasColumnType("float");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("SpecialtyPickupCompleted")
                         .HasColumnType("bit");

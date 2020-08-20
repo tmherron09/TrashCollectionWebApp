@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrashCollection.Data;
 
-namespace TrashCollection.Data.Migrations
+namespace TrashCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200820165329_UpdateModel")]
+    partial class UpdateModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,15 +50,15 @@ namespace TrashCollection.Data.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2413c5cf-2ec0-45ae-ae2f-ed309360aca1",
-                            ConcurrencyStamp = "c4c20ffc-933e-431e-9c21-a209ee9637f4",
+                            Id = "8beb10f2-822f-4a20-9ffe-45bad028ddfa",
+                            ConcurrencyStamp = "5322f39f-2c34-40ce-b550-8bba7ab50794",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "6a2e38b4-0dad-4a52-b0c9-ae14d798cb7f",
-                            ConcurrencyStamp = "a0f4350e-238e-4218-a91c-836ac3303c60",
+                            Id = "1d021029-1acd-4580-8ab8-6a6dbda16aaf",
+                            ConcurrencyStamp = "1aeaa94d-f685-4da6-a6b0-187a832ac397",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -263,8 +265,9 @@ namespace TrashCollection.Data.Migrations
                     b.Property<double>("OutstandingBalance")
                         .HasColumnType("float");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("SpecialtyPickupCompleted")
                         .HasColumnType("bit");

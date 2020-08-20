@@ -25,26 +25,23 @@ namespace TrashCollection.Controllers
         public IActionResult FinishRegistration()
         {
             Customer customer = new Customer();
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            customer.IdentityUserId = userId;
+            customer.EmailAddress = this.User.FindFirstValue(ClaimTypes.Name);
 
-
-
-
-
-
-            return View();
+            return View(customer);
         }
 
         // POST: Finish Registering
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult FinishRegistration(IFormCollection collection)
+        public IActionResult FinishRegistration(Customer customer)
         {
             try
             {
+                customer.IdentityUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+                customer.EmailAddress = this.User.FindFirstValue(ClaimTypes.Name);
 
-
+                _context.Add(customer);
+                _context.SaveChanges();
 
                 return RedirectToAction(nameof(Index));
             }
@@ -57,16 +54,18 @@ namespace TrashCollection.Controllers
         // GET: CustomersController
         public ActionResult Index()
         {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var customer = _context.Customers.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+            if (customer == null)
+            {
+                return RedirectToAction("FinishRegistration");
+            }
 
-            return View();
+
+            return View(customer);
         }
 
-        // GET: CustomersController/Details/5
-        public IActionResult Details(int id)
-        {
-            return View();
-        }
-
+       
         // GET: CustomersController/Create
         public IActionResult Create()
         {

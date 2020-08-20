@@ -18,7 +18,9 @@ namespace TrashCollection.ActionFilters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
+            
             var controller = context.RouteData.Values["controller"];
+                        
             if(controller.Equals("Home"))
             {
                 if(_claimsPrincipal.IsInRole("Customer"))
@@ -30,6 +32,7 @@ namespace TrashCollection.ActionFilters
                     context.Result = new RedirectToActionResult("Index", "Employees", null);
                 }
             }
+            
         }
 
         public void OnActionExecuted(ActionExecutedContext context)
