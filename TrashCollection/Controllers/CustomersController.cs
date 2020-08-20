@@ -62,6 +62,18 @@ namespace TrashCollection.Controllers
                 return RedirectToAction("FinishRegistration");
             }
 
+            return View(customer);
+        }
+        [HttpGet]
+        public ActionResult Index(string message)
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var customer = _context.Customers.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+            if (customer == null)
+            {
+                return RedirectToAction("FinishRegistration");
+            }
+
 
             return View(customer);
         }
@@ -109,13 +121,9 @@ namespace TrashCollection.Controllers
             Customer customerInDb = _context.Customers.Single(c => c.Id == customer.Id);
             customerInDb.WeeklyPickupDay = customer.WeeklyPickupDay;
             _context.SaveChanges();
-
-            ViewBag.Type = "Success!";
-            ViewBag.Message = "Weekly Trash day succesfully changed.";
-            ViewBag.HasMessage = true;
-
-            return View(nameof(Index), customerInDb);
-            //return RedirectToAction(nameof(Index));
+            
+            //return View( "Index", customerInDb);
+            return RedirectToAction(nameof(Index), new { message = "Weekly Trash day has been succesfully changed." });
         }
 
         public IActionResult SpecialtyPickup(int id)
