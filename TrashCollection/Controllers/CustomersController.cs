@@ -154,13 +154,49 @@ namespace TrashCollection.Controllers
             // Assign Employee with matching ZipCode.
             // Error Handling: FirstOrDefault due to seeding and Zipcode note currently set to Unique.
             var employeeId = _context.Employees.Where(e => e.AssignedZipCode == customerInDb.ZipCode).Select(e => e.Id).FirstOrDefault();
-            specialtyPickup.EmployeeId = employeeId;
+            // If zipcode has no assigned employee, add to Default Employee Account
+            specialtyPickup.EmployeeId = employeeId != 0 ? employeeId : 1;
 
             _context.OneTimePickups.Add(specialtyPickup);
             _context.SaveChanges();
 
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { message = "Specialty One-Time Pickup has been succesfully scheduled." });
+        }
+
+
+        public IActionResult ServicePause(int id)
+        {
+            var customer = _context.Customers.Single(c => c.Id == id);
+
+
+            return View(customer);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ServicePause(Customer customer)
+        {
+            Customer customerInDb = _context.Customers.Single(c => c.Id == customer.Id);
+            customerInDb.StartDate = customer.StartDate;
+            customerInDb.EndDate = customer.EndDate;
+
+            _context.SaveChanges();
+
+
+            return RedirectToAction(nameof(Index), new { message = "Trash Collection services have been successfully paused. You can unpause early anytime from the \"Pause or Start Service\" option." });
+        }
+
+        
+        public IActionResult EndServicePause(int id)
+        {
+            var customer = _context.Customers.Single(c => c.Id == id);
+
+            customer.StartDate = DateTime.MinValue;
+            customer.EndDate = DateTime.MinValue;
+
+            _context.SaveChanges();
+
+            return View("Index", customer);
         }
     }
 }

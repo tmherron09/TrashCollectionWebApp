@@ -17,6 +17,9 @@ namespace TrashCollection.Models
             OutstandingBalance = TrashPrices.MonthlyFee;
             HasServiceStop = false;
             SpecialtyPickupCompleted = false;
+            SpecialtyPickupDay = DateTime.MinValue;
+            StartDate = DateTime.MinValue;
+            EndDate = DateTime.MinValue;
             
         }
 
@@ -62,21 +65,22 @@ namespace TrashCollection.Models
                 return OutstandingBalance.ToString("C");
             }
         }
-
-        public string StartDate { get; set; }
-        public string EndDate { get; set; }
+        [Display(Name = "Start of Service Pause")]
+        public DateTime StartDate { get; set; }
+        [Display(Name = "End of Service Pause")]
+        public DateTime EndDate { get; set; }
         [NotMapped]
         public bool HasServiceStop
         {
             get
             {
-                if ((StartDate != null && EndDate != null) || (StartDate == "" && EndDate == ""))
+                if (StartDate == DateTime.MinValue && EndDate == DateTime.MinValue)
                 {
-                    return true;
+                    return false;
                 }
                 else
                 {
-                    return false;
+                    return true;
                 }
             }
             set

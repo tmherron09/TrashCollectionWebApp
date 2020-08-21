@@ -10,8 +10,8 @@ using TrashCollection.Data;
 namespace TrashCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200821055947_NewMigrationFromPurge")]
-    partial class NewMigrationFromPurge
+    [Migration("20200821124952_AllowNullableEIDOneTimePickup")]
+    partial class AllowNullableEIDOneTimePickup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,15 +50,15 @@ namespace TrashCollection.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "ecea110a-eb80-49fd-b7ea-34be6978d22b",
-                            ConcurrencyStamp = "9dfc8b5f-1e63-4009-899e-98d22ef111c6",
+                            Id = "cc877c5d-39b2-4692-83d2-e7435c4b569b",
+                            ConcurrencyStamp = "e93b712d-ac85-494a-a25f-ba6f5da8e86e",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "721f6701-bca8-4bbb-8b83-49a9724c5799",
-                            ConcurrencyStamp = "84a29249-147a-4673-b3da-6712325bbf4d",
+                            Id = "a62c11d1-5188-4495-9d64-759832b6d12d",
+                            ConcurrencyStamp = "aa543996-6af6-4f82-80e9-e2fe79d08646",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -248,8 +248,8 @@ namespace TrashCollection.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("EndDate")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("FamilyName")
                         .IsRequired()
@@ -275,8 +275,8 @@ namespace TrashCollection.Migrations
                     b.Property<DateTime>("SpecialtyPickupDay")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("StartDate")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("WeeklyPickupDay")
                         .HasColumnType("nvarchar(max)");

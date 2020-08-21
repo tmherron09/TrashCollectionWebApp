@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -25,6 +26,7 @@ namespace TrashCollection.Models
 
 
         [ForeignKey("Employee")]
+        [AllowNull]
         public int EmployeeId { get; set; }
         public Employee Employee { get; set; }
 

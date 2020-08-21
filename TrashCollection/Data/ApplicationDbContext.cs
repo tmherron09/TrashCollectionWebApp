@@ -36,6 +36,19 @@ namespace TrashCollection.Data
                         NormalizedName = "CUSTOMER"
                     }
                 );
+
+            builder.Entity<Employee>()
+                .HasData(
+                new Employee
+                {
+                    Id = 1,
+                    FirstName = "Default Employee",
+                    FamilyName = "Fail Case",
+                    EmailAddress = "default@trash.com",
+                    PhoneNumber = "555-555-5555",
+                    AssignedZipCode = "00000"
+                }
+                );
         }
 
         

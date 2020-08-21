@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrashCollection.Data;
 
 namespace TrashCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200821081707_UpdateCustomerStartEndDateTimeAfterNuke")]
+    partial class UpdateCustomerStartEndDateTimeAfterNuke
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,15 +50,15 @@ namespace TrashCollection.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f9f14b35-857b-43d6-9617-0062ae0a77cb",
-                            ConcurrencyStamp = "5ff43569-5758-4b23-b3d5-d14cab74abfd",
+                            Id = "2750bc28-4fe7-45d4-bbcc-407b7f0844dc",
+                            ConcurrencyStamp = "49937dad-b10c-4a62-ae6a-c99afb746f12",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "60201510-eec8-4bd1-aa46-392ebb8eab25",
-                            ConcurrencyStamp = "c0930c8c-6e65-4e9e-8d2c-2eb75a263498",
+                            Id = "7278eaa6-2c5b-4830-9a94-a62a501e3345",
+                            ConcurrencyStamp = "4447b6d8-0be8-4d57-a3bd-d931cd064900",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -324,17 +326,6 @@ namespace TrashCollection.Migrations
                     b.HasIndex("IdentityUserId");
 
                     b.ToTable("Employees");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AssignedZipCode = "00000",
-                            EmailAddress = "default@trash.com",
-                            FamilyName = "Fail Case",
-                            FirstName = "Default Employee",
-                            PhoneNumber = "555-555-5555"
-                        });
                 });
 
             modelBuilder.Entity("TrashCollection.Models.OneTimePickup", b =>
