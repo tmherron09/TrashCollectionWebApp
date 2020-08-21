@@ -28,27 +28,47 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
-            <div class="container row">
-                <div class="col-sm-3 my-auto">
-                    
-                    <div class="btn-group-vertical btn-group-lg">
-                        <a asp-action="Index" asp-route-id="@Model.Id" class="btn btn-light">Home</a>
-                        <a asp-action="Index" asp-route-id="@Model.Id" class="btn btn-light">View Current Balance Details</a>
-                        <a asp-action="ChangePickUpDay" asp-route-id="@Model.Id" class="btn btn-light">Change Weekly Trash Pickup</a>
-                        <a asp-action="ServicePause" asp-route-id="@Model.Id" class="btn btn-light">Pause or Start Service</a>
-                        <a asp-action="SpecialtyPickup" asp-route-id="@Model.Id" class="btn btn-light">Schedule Specialty Pickup</a>
-                    </div>
+        <main role="main" class="pb-3 ">
 
+            <div class="d-block d-sm-none">
+                <div class="btn-group-vertical btn-group-lg special" role="group">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-secondary btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Menu
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <a asp-action="Index" asp-route-id="@Model.Id" class="dropdown-item">Home</a>
+                        <a asp-action="Index" asp-route-id="@Model.Id" class="dropdown-item">View Current Balance Details</a>
+                        <a asp-action="ChangePickUpDay" asp-route-id="@Model.Id" class="dropdown-item">Change Weekly Trash Pickup</a>
+                        <a asp-action="ServicePause" asp-route-id="@Model.Id" class="dropdown-item">Pause or Start Service</a>
+                        <a asp-action="SpecialtyPickup" asp-route-id="@Model.Id" class="dropdown-item">Schedule Specialty Pickup</a>
+                    </div>
                 </div>
-                <div class="col-sm-9 my-auto">
+            </div>
+
+            <div class="container row">
+                <div class="col-sm-3 h-100 my-auto">
+
+
+                    <div class=" d-none d-sm-block">
+                        <div class="btn-group-vertical btn-group-lg">
+                            <a asp-action="Index" asp-route-id="@Model.Id" class="btn btn-light">Home</a>
+                            <a asp-action="Index" asp-route-id="@Model.Id" class="btn btn-light">View Current Balance Details</a>
+                            <a asp-action="ChangePickUpDay" asp-route-id="@Model.Id" class="btn btn-light">Change Weekly Trash Pickup</a>
+                            <a asp-action="ServicePause" asp-route-id="@Model.Id" class="btn btn-light">Pause or Start Service</a>
+                            <a asp-action="SpecialtyPickup" asp-route-id="@Model.Id" class="btn btn-light">Schedule Specialty Pickup</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-9 h-100 my-auto">
 
                     @RenderBody()
 
                 </div>
-                </div>
+            </div>
         </main>
     </div>
+    
+
 
     <footer class="border-top footer text-muted">
         <div class="container">
