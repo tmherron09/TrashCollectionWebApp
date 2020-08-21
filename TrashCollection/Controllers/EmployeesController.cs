@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using TrashCollection.Data;
 using TrashCollection.Models;
@@ -65,29 +66,14 @@ namespace TrashCollection.Controllers
                 return RedirectToAction("FinishRegistration");
             }
 
-            var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).Select(z => z.Address).ToList();
+            var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c=> c.Address, c=> c.WeeklyPickupDay);
             employee.Addresses = addresses;
+
 
 
             return View(employee);
         }
         
-
-        public ActionResult IndexExpand()
-        {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
-            if (employee == null)
-            {
-                return RedirectToAction("FinishRegistration");
-            }
-
-            var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).Select(z => z.Address).ToList();
-            employee.Addresses = addresses;
-
-
-            return View(employee);
-        }
 
         // GET: EmployeesController/Details/5
         public ActionResult Details(int id)

@@ -36,8 +36,9 @@ namespace TrashCollection.Models
         [RegularExpression(@"\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zip")]
         [Display(Name = "Assigned 5-Digit Zip Code Area")]
         public string AssignedZipCode { get; set; }
+
         [NotMapped]
-        public List<string> Addresses{ get; set; }
+        public Dictionary<string, string> Addresses{ get; set; }
 
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }

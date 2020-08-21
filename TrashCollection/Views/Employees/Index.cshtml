@@ -4,18 +4,202 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+
+
 <div class="jumbotron">
     <h1>Welcome back @Html.DisplayFor(model => model.AbbrvName)</h1>
+    <blockquote class="blockquote">
+        <p class="mb-0">Trash is nothing more than something that should be collected and disposed of for the betterment of our enviroment.</p>
+        <footer class="blockquote-footer">Our Founder, est. 1923</footer>
+    </blockquote>
 </div>
 <div>
-    <h3>Assigned Zip Codes</h3>
-    <ul>
-        <li>
-            <h5>@Html.DisplayFor(model => model.AssignedZipCode)</h5>
-        </li>
-    </ul>
+    @if (ViewContext.RouteData.Values["message"] != null)
+    {
+        <div class="alert alert-info">
+            <strong>Daily Message!</strong> @ViewContext.RouteData.Values["message"]
+        </div>
+    }
+    <h3>Assigned Zip Code: @Html.DisplayFor(model => model.AssignedZipCode)</h3>
+
+
+
+
+
+
+    <div class="card">
+        <div class="card-header">
+            <h4>Daily Assignments</h4>
+
+            @{ string getActive(string day) { return day == DateTime.Today.DayOfWeek.ToString() ? "active" : ""; }
+                string isSelectect(string day) { return day == DateTime.Today.DayOfWeek.ToString() ? "true" : "false"; }
+            }
+
+            <ul class="nav nav-tabs" id="days" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link @getActive("Monday")" data-toggle="tab" href="#Monday" role="tab" aria-controls="Monday" aria-selected="@isSelectect("Monday")">Monday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @getActive("Tuesday")" data-toggle="tab" href="#Tuesday" role="tab" aria-controls="Tuesday" aria-selected="@isSelectect("Tuesday")">Tuesday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @getActive("Wednesday")" data-toggle="tab" href="#Wednesday" role="tab" aria-controls="Wednesday" aria-selected="@isSelectect("Wednesday")">Wednesday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @getActive("Thursday")" data-toggle="tab" href="#Thursday" role="tab" aria-controls="Thursday" aria-selected="@isSelectect("Thursday")">Thursday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @getActive("Friday")" data-toggle="tab" href="#Friday" role="tab" aria-controls="Thursday" aria-selected="@isSelectect("Friday")">Friday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @getActive("Saturday")" data-toggle="tab" href="#Saturday" role="tab" aria-controls="Thursday" aria-selected="@isSelectect("Saturday")">Saturday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @getActive("Sunday")" data-toggle="tab" href="#Sunday" role="tab" aria-controls="Thursday" aria-selected="@isSelectect("Sunday")">Sunday</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#AllDays" role="tab" aria-controls="AllDays" aria-selected="false">All Days</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card-body">
+            <div class="tab-content mt-3">
+
+                @foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
+                {
+                    string isActive = day == DateTime.Today.DayOfWeek ? "active" : "";
+                    string ariaLabel = $"{@day.ToString()}-tab";
+                    int count = 0;
+                    string rowColor = count % 2 == 0 ? "bg-info" : "";
+
+
+
+                <div class="tab-pane @isActive" id="@day.ToString()" role="tabpanel" aria-labelledby="ariaLabel">
+                    <h4>@day.ToString()</h4>
+                    <table class="table table-dark">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>Address</th>
+                                <th>View On Map</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ var daysAddresses = Model.Addresses.Where(a => a.Value == @day.ToString());}
+
+                            @if (daysAddresses.Any())
+                            {
+
+
+                                foreach (var address in daysAddresses)
+                                {
+                                    count += 1;
+                                    <tr class="@rowColor">
+                                        <td>
+                                            @count
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => address.Key)
+                                        </td>
+                                        <td>
+                                            Add Link
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr class="@rowColor">
+                                    <td>
+                                        
+                                    </td>
+                                    <td>
+                                        No Pickups on this date.
+                                    </td>
+                                    <td>
+                                        
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                }
+
+
+            <div class="tab-pane" id="AllDays" role="tabpanel" aria-labelledby="AllDays-tab">
+                <h4>All Days</h4>
+                <table class="table table-dark">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Address</th>
+                            <th>View On Map</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @{
+                            var allDaysAddresses = Model.Addresses.OrderBy(a => a.Value);
+                            int countTwo = 0;
+                        }
+
+                        @foreach (var address in allDaysAddresses)
+                        {
+                            countTwo += 1;
+                            string allDaysRowColor(string whichDay)
+                            {
+
+                                switch (whichDay)
+                                {
+                                    case "Monday":
+                                        return "bg-primary";
+                                    case "Tuesday":
+                                        return "bg-secondary";
+                                    case "Wednesday":
+                                        return "bg-info";
+                                    case "Thursday":
+                                        return "bg-warning";
+                                    case "Friday":
+                                        return "bg-success";
+                                    case "Saturday":
+                                        return "bg-danger";
+                                    case "Sunday":
+                                        return "";
+                                    default:
+                                        return "";
+                                };
+                            }
+
+
+
+
+
+                            <tr class="@allDaysRowColor(address.Value)">
+                                <td>
+                                    @countTwo
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => address.Key)
+                                </td>
+                                <td>
+                                    Add Link
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+
+
+            </div>
+
+            </div>
+    </div>
+
 </div>
-@*<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    
-</div>*@
+
