@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrashCollection.Data;
 
 namespace TrashCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200821023326_AddOneTimePickupModel")]
+    partial class AddOneTimePickupModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,15 +50,15 @@ namespace TrashCollection.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f408de7c-8478-4ac6-ab09-f775bb5dacdd",
-                            ConcurrencyStamp = "6f6e603d-01fa-4901-ba00-db17440f51fb",
+                            Id = "373b684b-d745-4620-a468-cfcdb4615a23",
+                            ConcurrencyStamp = "dfc2bf02-d2f1-448e-81d2-2182e731df5f",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "7fbb8d52-0063-4ab2-b43f-9a5515f249af",
-                            ConcurrencyStamp = "92ab7ec9-2de3-498c-8f46-1e64a3f17bd8",
+                            Id = "7b7d4352-2d84-4d47-821e-25c11c23854b",
+                            ConcurrencyStamp = "a7e236ff-faf8-4181-b231-a345eca60365",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -266,9 +268,6 @@ namespace TrashCollection.Migrations
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("SpecialtyPickupCompleted")
-                        .HasColumnType("bit");
 
                     b.Property<DateTime>("SpecialtyPickupDay")
                         .HasColumnType("datetime2");

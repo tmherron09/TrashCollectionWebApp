@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrashCollection.Data;
 
 namespace TrashCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200821034326_UpdateCustomerSpecialtyPickupCompleted")]
+    partial class UpdateCustomerSpecialtyPickupCompleted
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,15 +50,15 @@ namespace TrashCollection.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f408de7c-8478-4ac6-ab09-f775bb5dacdd",
-                            ConcurrencyStamp = "6f6e603d-01fa-4901-ba00-db17440f51fb",
+                            Id = "084924b0-0978-4321-91e7-031848933631",
+                            ConcurrencyStamp = "5012c251-be16-48eb-bc36-6e1f2a62b568",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "7fbb8d52-0063-4ab2-b43f-9a5515f249af",
-                            ConcurrencyStamp = "92ab7ec9-2de3-498c-8f46-1e64a3f17bd8",
+                            Id = "18072986-f714-45ed-b12f-974d509a223a",
+                            ConcurrencyStamp = "647b3d55-c127-4095-9f3b-54f9958aed3d",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -267,7 +269,7 @@ namespace TrashCollection.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool?>("SpecialtyPickupCompleted")
+                    b.Property<bool>("SpecialtyPickupCompleted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("SpecialtyPickupDay")

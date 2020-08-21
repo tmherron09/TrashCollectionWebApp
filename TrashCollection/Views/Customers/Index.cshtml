@@ -2,17 +2,13 @@
 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout_Customer.cshtml";
 }
 
-<h1>Account Home</h1>
-@*@if (ViewBag.Message != null)
-{
-    <div class="alert alert-success">
-        <strong>@ViewBag.MessageType</strong> @ViewBag.Message
-    </div>
+
+
     
-}*@
+
 @if (Context.Request.QueryString.HasValue)
 {
     <div class="alert alert-success">
@@ -21,8 +17,74 @@
 }
 
 
+@{DateTime Sunday = DateTime.Today.AddDays( (int)DateTime.Today.DayOfWeek * -1);
+        
+        
+        }
 
-<div>
+
+
+
+
+<div class="container">
+    <h1>Account Home</h1>
+    <h4><span class="badge badge-secondary">@Model.AbbrvName</span></h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.WeeklyPickupDay)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.WeeklyPickupDay)
+        </dd>
+        <dt class="col-sm-4">
+            @Html.DisplayNameFor(model => model.CurrentBalance)
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.CurrentBalance)
+        </dd>
+        @if (Model.HasServiceStop)
+        {
+            <dt class="col-sm-4">
+                Html.DisplayNameFor(model => model.StartDate)
+            </dt>
+            <dd class="col-sm-8">
+                Html.DisplayFor(model => model.StartDate)
+            </dd>
+            <dt class="col-sm-4">
+                Html.DisplayNameFor(model => model.EndDate)
+            </dt>
+            <dd class="col-sm-8">
+                Html.DisplayFor(model => model.EndDate)
+            </dd>
+        }
+        @if (Model.SpecialtyPickupDay != DateTime.MinValue && !Model.SpecialtyPickupCompleted.Value)
+        {
+            <dt class="col-sm-4">
+                Specialty One Time Pickup: Pending
+            </dt>
+            <dd class="col-sm-8">
+                @{var dateFormatted = Model.SpecialtyPickupDay.ToString("MM/dd"); }
+                @dateFormatted
+            </dd>
+        }
+        else if (Model.SpecialtyPickupDay != DateTime.MinValue && Model.SpecialtyPickupCompleted.HasValue)
+        {
+            <dt class="col-sm-2">
+                Specialty One Time Pickup: Pickup Complete
+            </dt>
+            <dd class="col-sm-8">
+                @Html.DisplayFor(model => model.SpecialtyPickupDay.ToString("M/d"))
+            </dd>
+        }
+    </dl>
+</div>
+
+
+
+
+
+@*<div class="container">
     <h4>@Html.DisplayFor(model => model.AbbrvName)</h4>
     <hr />
     <dl class="row">
@@ -32,7 +94,7 @@
         <dd class="col-sm-10">
             <span>@Html.DisplayFor(model => model.WeeklyPickupDay)</span>
             <br />
-            <a asp-action="ChangePickUpDay" asp-route-id="@Model.Id" class="btn btn-primary btn-sm">Change Day</a>
+            
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CurrentBalance)
@@ -55,6 +117,25 @@
                 Html.DisplayFor(model => model.EndDate)
             </dd>
         }
+        @if (Model.SpecialtyPickupDay != null && !Model.SpecialtyPickupCompleted)
+        {
+            <dt class="col-sm-2">
+                Specialty One Time Pickup: Pending
+            </dt>
+            <dd class="col-sm-10">
+                @{var dateFormatted = Model.SpecialtyPickupDay.ToString("MM/dd"); }
+                @dateFormatted
+            </dd>
+        }
+        else if (Model.SpecialtyPickupDay != null && Model.SpecialtyPickupCompleted)
+        {
+            <dt class="col-sm-2">
+                Specialty One Time Pickup: Pickup Complete
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.SpecialtyPickupDay.ToString("M/d"))
+            </dd>
+        }
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Address)
         </dt>
@@ -69,9 +150,6 @@
         </dd>
     </dl>
 </div>
-<div>
+<div>*@
 
 
-
-
-</div>

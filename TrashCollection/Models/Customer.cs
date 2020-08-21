@@ -16,6 +16,8 @@ namespace TrashCollection.Models
         {
             OutstandingBalance = TrashPrices.MonthlyFee;
             HasServiceStop = false;
+            SpecialtyPickupCompleted = false;
+            
         }
 
         [Key]
@@ -27,7 +29,7 @@ namespace TrashCollection.Models
         [Required(ErrorMessage = "Family/Last Name is a Required Input")]
         public string FamilyName { get; set; }
         [NotMapped]
-        public string AbbrvName { get { return FirstName != null ? FirstName + " " + FamilyName[0]: "unknown"; } }
+        public string AbbrvName { get { return FirstName != null ? FirstName + " " + FamilyName[0] + ".": "unknown"; } }
         [Required(ErrorMessage = "Email is a Required Input")]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -41,11 +43,12 @@ namespace TrashCollection.Models
 
 
 
-
-        public bool SpecialtyPickupCompleted;
+        
+        public bool? SpecialtyPickupCompleted { get; set; }
 
         public DateTime SpecialtyPickupDay { get; set; }
-
+        [NotMapped]
+        public ICollection<OneTimePickup> AllSpecialtyPickups { get; set; }
 
 
 

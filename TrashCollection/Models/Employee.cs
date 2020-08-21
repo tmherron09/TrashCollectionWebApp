@@ -39,6 +39,8 @@ namespace TrashCollection.Models
 
         [NotMapped]
         public Dictionary<string, string> Addresses{ get; set; }
+        [NotMapped]
+        public ICollection<OneTimePickup> PendingOneTimePickups { get; set; }
 
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }

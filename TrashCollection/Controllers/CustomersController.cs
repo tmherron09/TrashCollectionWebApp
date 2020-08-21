@@ -137,9 +137,26 @@ namespace TrashCollection.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult SpecialtyPickup(Customer customer)
         {
+            // Set the pickup Date for customer.
             Customer customerInDb = _context.Customers.Single(c => c.Id == customer.Id);
             customerInDb.SpecialtyPickupDay = customer.SpecialtyPickupDay;
             customerInDb.SpecialtyPickupCompleted = false;
+
+            // Start an entry on the OneTimePickup Table
+            OneTimePickup specialtyPickup = new OneTimePickup();
+            specialtyPickup.PickUpDate = customerInDb.SpecialtyPickupDay;
+            specialtyPickup.HasBeenPickedup = false;
+
+            // Assign customer to entry
+            specialtyPickup.CustomerId = customerInDb.Id;
+            customerInDb.SpecialtyPickupCompleted = false;
+
+            // Assign Employee with matching ZipCode.
+            // Error Handling: FirstOrDefault due to seeding and Zipcode note currently set to Unique.
+            var employeeId = _context.Employees.Where(e => e.AssignedZipCode == customerInDb.ZipCode).Select(e => e.Id).FirstOrDefault();
+            specialtyPickup.EmployeeId = employeeId;
+
+            _context.OneTimePickups.Add(specialtyPickup);
             _context.SaveChanges();
 
 

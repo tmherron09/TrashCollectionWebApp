@@ -18,14 +18,14 @@ namespace TrashCollection.Models
 
 
         [ForeignKey("Customer")]
-        public string CustomerId { get; set; }
+        public int CustomerId { get; set; }
         public Customer Customer{ get; set; }
 
 
 
 
         [ForeignKey("Employee")]
-        public string EmployeeId { get; set; }
+        public int EmployeeId { get; set; }
         public Employee Employee { get; set; }
 
 

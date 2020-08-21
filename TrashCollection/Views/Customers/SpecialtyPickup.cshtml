@@ -1,0 +1,59 @@
+﻿@model TrashCollection.Models.Customer
+
+@{
+    ViewData["Title"] = "Specialty Pickup";
+    Layout = "~/Views/Shared/_Layout_Customer.cshtml";
+}
+
+<h1>Specialty One-Time Pickup</h1>
+
+<h4><span class="badge badge-secondary">@Model.AbbrvName</span></h4>
+<hr />
+<div class="card mx-auto">
+    <div class="card-header">
+        <h3>Specialty Pickup One-Time Service</h3>
+    </div>
+
+            <div class="card-body">
+
+                <h5>Reminder: All Specialty Pickups are an additional fee @TrashPrices.OneTimePickupBaseFee.ToString("C") with an additional surchase of @TrashPrices.OneTimePickupWeekendSurcharge.ToString("C"). Charges will apply to account once pickup has been confirmed.</h5>
+
+
+                @if (Model.SpecialtyPickupDay == DateTime.MinValue)
+                {
+                    <form asp-action="SpecialtyPickup">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="form-group">
+                            <label class="control-label">Please Choose a Date for Pickup</label>
+                            <input asp-for="SpecialtyPickupDay" type="datetime-local" value="@DateTime.Today.ToString("MM/dd")" /><br />
+                        </div>
+
+
+                        <br />
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-primary" />
+                        </div>
+                    </form>
+                }
+                else if (Model.SpecialtyPickupDay != DateTime.MinValue || !Model.SpecialtyPickupCompleted.Value)
+                {
+                    <div class=" row text-center">
+                        <div class="alert alert-secondary mx-auto " role="alert">
+                            <h4>
+                                Specialty One Time Pickup: Pending
+                            </h4>
+                            <hr />
+                            <h5>
+                                @{var dateFormatted = Model.SpecialtyPickupDay.ToString("MM/dd"); }
+                                @dateFormatted
+                            </h5>
+                        </div>
+                    </div>
+                }
+
+
+            </div>
+        </div>
+
+
