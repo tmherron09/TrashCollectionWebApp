@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TrashCollection.Migrations
 {
-    public partial class UpdateEmployeeModel : Migration
+    public partial class NewMigrationFromPurge : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -163,7 +163,8 @@ namespace TrashCollection.Migrations
                     EmailAddress = table.Column<string>(nullable: false),
                     PhoneNumber = table.Column<string>(nullable: false),
                     WeeklyPickupDay = table.Column<string>(nullable: true),
-                    SpecialtyPickupCompleted = table.Column<bool>(nullable: false),
+                    SpecialtyPickupCompleted = table.Column<bool>(nullable: true),
+                    SpecialtyPickupDay = table.Column<DateTime>(nullable: false),
                     OutstandingBalance = table.Column<double>(nullable: false),
                     StartDate = table.Column<string>(nullable: true),
                     EndDate = table.Column<string>(nullable: true),
@@ -206,15 +207,43 @@ namespace TrashCollection.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "1503d399-0e02-4364-b5cf-52976e38e63f", "10196d55-551e-41aa-a6b3-b2fd68ab3f87", "Employee", "EMPLOYEE" });
+            migrationBuilder.CreateTable(
+                name: "OneTimePickups",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PickUpDate = table.Column<DateTime>(nullable: false),
+                    HasBeenPickedup = table.Column<bool>(nullable: false),
+                    CustomerId = table.Column<int>(nullable: false),
+                    EmployeeId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OneTimePickups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OneTimePickups_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OneTimePickups_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "616dd616-40ba-4952-9c43-b132be65e82d", "3090e6e3-4a55-4908-b5e2-148c901011f7", "Customer", "CUSTOMER" });
+                values: new object[] { "ecea110a-eb80-49fd-b7ea-34be6978d22b", "9dfc8b5f-1e63-4009-899e-98d22ef111c6", "Employee", "EMPLOYEE" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "721f6701-bca8-4bbb-8b83-49a9724c5799", "84a29249-147a-4673-b3da-6712325bbf4d", "Customer", "CUSTOMER" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -264,6 +293,16 @@ namespace TrashCollection.Migrations
                 name: "IX_Employees_IdentityUserId",
                 table: "Employees",
                 column: "IdentityUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OneTimePickups_CustomerId",
+                table: "OneTimePickups",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OneTimePickups_EmployeeId",
+                table: "OneTimePickups",
+                column: "EmployeeId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -284,13 +323,16 @@ namespace TrashCollection.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "OneTimePickups");
+
+            migrationBuilder.DropTable(
+                name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
                 name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Employees");
-
-            migrationBuilder.DropTable(
-                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

@@ -1,0 +1,54 @@
+﻿@model TrashCollection.Models.Customer
+@{
+    ViewData["Title"] = "AddressMap";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{ var searchParam = @Model.Address + @Model.ZipCode;}
+
+<h1>AddressMap</h1>
+<h3>Issues with Google Geocashing API key/ Unavailable for my account, default all locations to this.</h3>
+
+
+<div id="map" style="height: 400px; width: 100%"></div>
+<script>
+
+
+
+
+
+
+function initMap() {
+
+
+    var uluru = { lat: -25.344, lng: 131.036 };
+
+    var location = { lat: 38.55744, lng: -90.4058431 };
+
+
+    // attempt at locationIq
+    $.getJSON(theUrl, function (data) {
+        var obj = JSON.parse(data)
+        location.lat = obj.lat;
+        location.lng = obj.lon;
+
+        
+
+        // JSON result in `data` variable
+    });
+
+    
+    var map = new google.maps.Map(
+        document.getElementById('map'), { zoom: 15, center: location });
+
+    var marker = new google.maps.Marker({ position: uluru, map: map });
+  
+}
+</script>
+
+
+<script defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDenbSy5g1nDd3da1Zj7vUDIbF0--DiqKc&callback=initMap">
+</script>
+
+@*AIzaSyDenbSy5g1nDd3da1Zj7vUDIbF0--DiqKc*@

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using TrashCollection.Data;
@@ -50,13 +51,11 @@ namespace TrashCollection.Controllers
             }
             catch
             {
-                
+
                 return View();
             }
         }
 
-
-        
         public ActionResult Index()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -66,14 +65,14 @@ namespace TrashCollection.Controllers
                 return RedirectToAction("FinishRegistration");
             }
 
-            var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c=> c.Address, c=> c.WeeklyPickupDay);
+            var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.Address, c => c.WeeklyPickupDay);
             employee.Addresses = addresses;
 
 
 
             return View(employee);
         }
-        
+
 
         // GET: EmployeesController/Details/5
         public ActionResult Details(int id)
@@ -87,14 +86,40 @@ namespace TrashCollection.Controllers
             return View();
         }
 
-        // POST: EmployeesController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public IActionResult TodaysPendingPickups(int id)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                //var employee = _context.Employees.Where(e => e.Id == id).Single();
+
+                ViewBag.ListFor = "Today's Pending One-Time Pickups";
+
+                //var pickups = _context.OneTimePickups.Include(p => p.Customer).Where(c => c.Customer.SpecialtyPickupDay.Date == DateTime.Today).Where(p => p.EmployeeId == id).Include(p=> p.Employee);
+                var pickups = _context.OneTimePickups.Include(c => c.Customer);
+                var filterCustomer = pickups.Where(c=> c.PickUpDate.Day == DateTime.Today.Day ).Include(e => e.Employee).AsQueryable();
+                var filterEmployee = filterCustomer.Where(e => e.EmployeeId == id).AsEnumerable();
+
+                return View("OneTimePickups", filterEmployee);
+
+            }
+            catch
+            {
+                return View();
+            }
+        }
+        public IActionResult AllPendingPickups(int id)
+        {
+            try
+            {
+                //var employee = _context.Employees.Where(e => e.Id == id).Single();
+
+                ViewBag.ListFor = "All Pending Pickups";
+
+                var pickups = _context.OneTimePickups.Include(p => p.Customer).Where(p => p.EmployeeId == id).Include(p => p.Employee);
+
+
+                return View("OneTimePickups", pickups);
+
             }
             catch
             {
@@ -102,46 +127,47 @@ namespace TrashCollection.Controllers
             }
         }
 
-        // GET: EmployeesController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: EmployeesController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public IActionResult PickupCompleted(OneTimePickup completedPickup)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var completedPickupInDb = _context.OneTimePickups.Find(completedPickup);
+
+                var customer = _context.Customers.Where(c => c.Id == completedPickupInDb.CustomerId).FirstOrDefault();
+                customer.SpecialtyPickupCompleted = true;
+
+
+                double pickupFee = TrashPrices.GetOneTimePickupCost(customer);
+                customer.OutstandingBalance += pickupFee;
+
+                customer.SpecialtyPickupDay = DateTime.MinValue;
+                completedPickup.HasBeenPickedup = true;
+                _context.SaveChanges();
+
+                var employee = _context.Employees.Where(e => e.Id == completedPickup.EmployeeId).SingleOrDefault();
+                var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.Address, c => c.WeeklyPickupDay);
+                employee.Addresses = addresses;
+                return View("Index", employee);
+
+
             }
             catch
             {
-                return View();
+                var employee = _context.Employees.Where(e => e.Id == completedPickup.EmployeeId).SingleOrDefault();
+                var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.Address, c => c.WeeklyPickupDay);
+                employee.Addresses = addresses;
+                return View("Index", employee);
             }
         }
 
-        // GET: EmployeesController/Delete/5
-        public ActionResult Delete(int id)
+
+        public IActionResult AddressMap()
         {
-            return View();
+            Customer customer = new Customer();
+
+
+            return View(customer);
         }
 
-        // POST: EmployeesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
     }
 }

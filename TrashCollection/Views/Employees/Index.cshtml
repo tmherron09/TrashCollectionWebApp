@@ -23,14 +23,24 @@
     }
     <h3>Assigned Zip Code: @Html.DisplayFor(model => model.AssignedZipCode)</h3>
 
-
-
+    AddressMap
+    <a asp-action="AddressMap">Test Map</a>
 
 
     @* Start of Daily Pickups Card/Table *@
     <div class="card">
         <div class="card-header">
             <h4>Daily Assignments</h4>
+
+            <div>
+                <a asp-action="TodaysPendingPickups" asp-route-id="@Model.Id" class="btn btn-primary">
+                    Pending Pickups Today <span class="badge badge-light">4</span>
+                </a>
+                <a asp-action="AllPendingPickups" asp-route-id="@Model.Id" class="btn btn-primary">
+                    All Pending Pickups <span class="badge badge-light">4</span>
+                </a>
+            </div>
+
 
             @{ string getActive(string day) { return day == DateTime.Today.DayOfWeek.ToString() ? "active" : ""; }
                 string isSelectect(string day) { return day == DateTime.Today.DayOfWeek.ToString() ? "true" : "false"; }
@@ -76,8 +86,59 @@
 
 
 
-                <div class="tab-pane @isActive" id="@day.ToString()" role="tabpanel" aria-labelledby="ariaLabel">
-                    <h4>@day.ToString()</h4>
+                    <div class="tab-pane @isActive" id="@day.ToString()" role="tabpanel" aria-labelledby="ariaLabel">
+                        <h4>@day.ToString()</h4>
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Address</th>
+                                    <th>View On Map</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @{ var daysAddresses = Model.Addresses.Where(a => a.Value == @day.ToString());}
+
+                                @if (daysAddresses.Any())
+                                {
+
+
+                                    foreach (var address in daysAddresses)
+                                    {
+                                        count += 1;
+                                        <tr class="@rowColor">
+                                            <td>
+                                                @count
+                                            </td>
+                                            <td>
+                                                @Html.DisplayFor(modelItem => address.Key)
+                                            </td>
+                                            <td>
+                                                Add Link
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr class="@rowColor">
+                                        <td>
+                                        </td>
+                                        <td>
+                                            No Pickups on this date.
+                                        </td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+
+
+                <div class="tab-pane" id="AllDays" role="tabpanel" aria-labelledby="AllDays-tab">
+                    <h4>All Days</h4>
                     <table class="table table-dark">
                         <thead>
                             <tr>
@@ -87,118 +148,65 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @{ var daysAddresses = Model.Addresses.Where(a => a.Value == @day.ToString());}
 
-                            @if (daysAddresses.Any())
-                            {
-
-
-                                foreach (var address in daysAddresses)
-                                {
-                                    count += 1;
-                                    <tr class="@rowColor">
-                                        <td>
-                                            @count
-                                        </td>
-                                        <td>
-                                            @Html.DisplayFor(modelItem => address.Key)
-                                        </td>
-                                        <td>
-                                            Add Link
-                                        </td>
-                                    </tr>
-                                }
+                            @{
+                                var allDaysAddresses = Model.Addresses.OrderBy(a => a.Value);
+                                int countTwo = 0;
                             }
-                            else
+
+                            @foreach (var address in allDaysAddresses)
                             {
-                                <tr class="@rowColor">
+                                countTwo += 1;
+                                string allDaysRowColor(string whichDay)
+                                {
+
+                                    switch (whichDay)
+                                    {
+                                        case "Monday":
+                                            return "bg-primary";
+                                        case "Tuesday":
+                                            return "bg-secondary";
+                                        case "Wednesday":
+                                            return "bg-info";
+                                        case "Thursday":
+                                            return "bg-warning";
+                                        case "Friday":
+                                            return "bg-success";
+                                        case "Saturday":
+                                            return "bg-danger";
+                                        case "Sunday":
+                                            return "";
+                                        default:
+                                            return "";
+                                    };
+                                }
+
+
+
+
+
+                                <tr class="@allDaysRowColor(address.Value)">
                                     <td>
-                                        
+                                        @countTwo
                                     </td>
                                     <td>
-                                        No Pickups on this date.
+                                        @Html.DisplayFor(modelItem => address.Key)
                                     </td>
                                     <td>
-                                        
+                                        Add Link
                                     </td>
                                 </tr>
                             }
+
                         </tbody>
                     </table>
                 </div>
-                }
-
-
-            <div class="tab-pane" id="AllDays" role="tabpanel" aria-labelledby="AllDays-tab">
-                <h4>All Days</h4>
-                <table class="table table-dark">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th>Address</th>
-                            <th>View On Map</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @{
-                            var allDaysAddresses = Model.Addresses.OrderBy(a => a.Value);
-                            int countTwo = 0;
-                        }
-
-                        @foreach (var address in allDaysAddresses)
-                        {
-                            countTwo += 1;
-                            string allDaysRowColor(string whichDay)
-                            {
-
-                                switch (whichDay)
-                                {
-                                    case "Monday":
-                                        return "bg-primary";
-                                    case "Tuesday":
-                                        return "bg-secondary";
-                                    case "Wednesday":
-                                        return "bg-info";
-                                    case "Thursday":
-                                        return "bg-warning";
-                                    case "Friday":
-                                        return "bg-success";
-                                    case "Saturday":
-                                        return "bg-danger";
-                                    case "Sunday":
-                                        return "";
-                                    default:
-                                        return "";
-                                };
-                            }
-
-
-
-
-
-                            <tr class="@allDaysRowColor(address.Value)">
-                                <td>
-                                    @countTwo
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => address.Key)
-                                </td>
-                                <td>
-                                    Add Link
-                                </td>
-                            </tr>
-                        }
-
-                    </tbody>
-                </table>
-            </div>
 
 
 
             </div>
 
-            </div>
+        </div>
     </div>
     @* End of Daily Pickups Card/Table *@
 

@@ -10,8 +10,8 @@ using TrashCollection.Data;
 namespace TrashCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200821034326_UpdateCustomerSpecialtyPickupCompleted")]
-    partial class UpdateCustomerSpecialtyPickupCompleted
+    [Migration("20200821055947_NewMigrationFromPurge")]
+    partial class NewMigrationFromPurge
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,15 +50,15 @@ namespace TrashCollection.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "084924b0-0978-4321-91e7-031848933631",
-                            ConcurrencyStamp = "5012c251-be16-48eb-bc36-6e1f2a62b568",
+                            Id = "ecea110a-eb80-49fd-b7ea-34be6978d22b",
+                            ConcurrencyStamp = "9dfc8b5f-1e63-4009-899e-98d22ef111c6",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "18072986-f714-45ed-b12f-974d509a223a",
-                            ConcurrencyStamp = "647b3d55-c127-4095-9f3b-54f9958aed3d",
+                            Id = "721f6701-bca8-4bbb-8b83-49a9724c5799",
+                            ConcurrencyStamp = "84a29249-147a-4673-b3da-6712325bbf4d",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -269,7 +269,7 @@ namespace TrashCollection.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("SpecialtyPickupCompleted")
+                    b.Property<bool?>("SpecialtyPickupCompleted")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("SpecialtyPickupDay")

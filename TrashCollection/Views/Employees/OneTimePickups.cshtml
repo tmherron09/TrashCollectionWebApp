@@ -1,0 +1,42 @@
+﻿@model IEnumerable<TrashCollection.Models.OneTimePickup>
+
+@{
+    ViewData["Title"] = "OneTimePickups";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>One-Time Pickups</h1>
+<h3>@ViewBag.ListFor</h3>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PickUpDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Customer.Address)
+            </th>
+            <th>
+                Action
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var pickup in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => pickup.PickUpDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => pickup.Customer.Address)
+            </td>
+            <td>
+                <a asp-action="PickupCompleted" asp-route-id="@pickup" class="btn btn-outline-secondary">Confirm Pickup</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
