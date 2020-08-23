@@ -53,7 +53,7 @@ namespace TrashCollection.Controllers
         }
 
         // GET: CustomersController
-        public ActionResult Index()
+        public IActionResult Index()
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var customer = _context.Customers.Where(c => c.IdentityUserId == userId).SingleOrDefault();
@@ -65,7 +65,7 @@ namespace TrashCollection.Controllers
             return View(customer);
         }
         [HttpGet]
-        public ActionResult Index(string message)
+        public IActionResult Index(string message)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var customer = _context.Customers.Where(c => c.IdentityUserId == userId).SingleOrDefault();
@@ -79,29 +79,7 @@ namespace TrashCollection.Controllers
         }
         
 
-        // GET: CustomersController/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: CustomersController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(IFormCollection collection)
-        {
-            try
-            {
-                
-
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+      
 
         // GET: CustomersController/Edit/5
         public IActionResult ChangePickUpDay(int id)
@@ -125,7 +103,7 @@ namespace TrashCollection.Controllers
             //return View( "Index", customerInDb);
             return RedirectToAction(nameof(Index), new { message = "Weekly Trash day has been succesfully changed." });
         }
-
+        
         public IActionResult SpecialtyPickup(int id)
         {
             var customer = _context.Customers.Single(c => c.Id == id);
@@ -196,7 +174,8 @@ namespace TrashCollection.Controllers
 
             _context.SaveChanges();
 
-            return View("Index", customer);
+            //return View("Index", customer);
+            return RedirectToAction(nameof(Index), new { message = "Trash Collection services have been successfully resumed. You can pause service again at anytime from the \"Pause or Start Service\" option." });
         }
     }
 }

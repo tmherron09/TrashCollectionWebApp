@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using TrashCollection.Data;
 using TrashCollection.Models;
 
@@ -90,16 +91,20 @@ namespace TrashCollection.Controllers
         {
             try
             {
-                //var employee = _context.Employees.Where(e => e.Id == id).Single();
+
 
                 ViewBag.ListFor = "Today's Pending One-Time Pickups";
+                var pickupskWithEmployeeCustomer = _context.OneTimePickups
+                    .Include(p => p.Customer);
 
-                //var pickups = _context.OneTimePickups.Include(p => p.Customer).Where(c => c.Customer.SpecialtyPickupDay.Date == DateTime.Today).Where(p => p.EmployeeId == id).Include(p=> p.Employee);
-                var pickups = _context.OneTimePickups.Include(c => c.Customer);
-                var filterCustomer = pickups.Where(c=> c.PickUpDate.Day == DateTime.Today.Day ).Include(e => e.Employee).AsQueryable();
-                var filterEmployee = filterCustomer.Where(e => e.EmployeeId == id).AsEnumerable();
+                var todaysPickups = pickupskWithEmployeeCustomer.Where(p => p.EmployeeId == id &&
+                                                                p.HasBeenPickedup == false &&
+                                                                p.PickUpDate.DayOfYear == DateTime.Today.DayOfYear)
+                                                                .OrderBy(p => p.PickUpDate).AsEnumerable();
+                //var todaysPickups = pickups.Where(p => p.PickUpDate.DayOfYear == DateTime.Today.DayOfYear).
 
-                return View("OneTimePickups", filterEmployee);
+
+                return View("OneTimePickups", todaysPickups);
 
             }
             catch
@@ -115,7 +120,11 @@ namespace TrashCollection.Controllers
 
                 ViewBag.ListFor = "All Pending Pickups";
 
-                var pickups = _context.OneTimePickups.Include(p => p.Customer).Where(p => p.EmployeeId == id).Include(p => p.Employee);
+                var pickupskWithEmployeeCustomer = _context.OneTimePickups
+                    .Include(p => p.Customer);
+
+                //var pickups = pickupskWithEmployeeCustomer.Where(p => p.EmployeeId == id).OrderBy(p=> p.PickUpDate).ToList();
+                var pickups = pickupskWithEmployeeCustomer.Where(p => p.EmployeeId == id && p.HasBeenPickedup == false).OrderBy(p => p.PickUpDate).AsEnumerable();
 
 
                 return View("OneTimePickups", pickups);
@@ -127,11 +136,19 @@ namespace TrashCollection.Controllers
             }
         }
 
-        public IActionResult PickupCompleted(OneTimePickup completedPickup)
+        public IActionResult PickupCompleted(int id)
         {
+
+            //var completedPickupInDb = _context.OneTimePickups.Where(o => o.Id == completedPickup.Id).Single();
+
+
+            var completedPickupInDb = _context.OneTimePickups.Where(o => o.Id == id).Single();
+
             try
             {
-                var completedPickupInDb = _context.OneTimePickups.Find(completedPickup);
+
+
+                //var completedPickupInDb = _context.OneTimePickups.Find(completedPickup);
 
                 var customer = _context.Customers.Where(c => c.Id == completedPickupInDb.CustomerId).FirstOrDefault();
                 customer.SpecialtyPickupCompleted = true;
@@ -141,10 +158,10 @@ namespace TrashCollection.Controllers
                 customer.OutstandingBalance += pickupFee;
 
                 customer.SpecialtyPickupDay = DateTime.MinValue;
-                completedPickup.HasBeenPickedup = true;
+                completedPickupInDb.HasBeenPickedup = true;
                 _context.SaveChanges();
 
-                var employee = _context.Employees.Where(e => e.Id == completedPickup.EmployeeId).SingleOrDefault();
+                var employee = _context.Employees.Where(e => e.Id == completedPickupInDb.EmployeeId).SingleOrDefault();
                 var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.Address, c => c.WeeklyPickupDay);
                 employee.Addresses = addresses;
                 return View("Index", employee);
@@ -153,7 +170,8 @@ namespace TrashCollection.Controllers
             }
             catch
             {
-                var employee = _context.Employees.Where(e => e.Id == completedPickup.EmployeeId).SingleOrDefault();
+                //completedPickupInDb = _context.OneTimePickups.Where(o => o == (OneTimePickup)completedPickup).Single();
+                var employee = _context.Employees.Where(e => e.Id == completedPickupInDb.EmployeeId).SingleOrDefault();
                 var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.Address, c => c.WeeklyPickupDay);
                 employee.Addresses = addresses;
                 return View("Index", employee);
