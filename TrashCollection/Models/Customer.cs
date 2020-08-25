@@ -24,14 +24,28 @@ namespace TrashCollection.Models
 
         [Key]
         public int Id { get; set; }
+
+
+        // Name
         [Display(Name = "First Name")]
         [Required(ErrorMessage = "First Name is a Required Input")]
         public string FirstName { get; set; }
         [Display(Name = "Family/Last Name")]
         [Required(ErrorMessage = "Family/Last Name is a Required Input")]
         public string FamilyName { get; set; }
-        [NotMapped]
-        public string AbbrvName { get { return FirstName != null ? FirstName + " " + FamilyName[0] + ".": "unknown"; } }
+
+
+        // Physical Address
+        [Required]
+        public string StreetAddress { get; set; }
+        [Required]
+        public string City { get; set; }
+        [Required]
+        [RegularExpression(@"\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zip")]
+        [Display(Name = "5-Digit Zip Code")]
+        public string ZipCode { get; set; }
+
+        // Contact Info
         [Required(ErrorMessage = "Email is a Required Input")]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -40,20 +54,27 @@ namespace TrashCollection.Models
         [Required(ErrorMessage = "Phone Number is a Required Input")]
         public string PhoneNumber { get; set; }
 
-        public string WeeklyPickupDay { get; set; }
-
-        public bool? SpecialtyPickupCompleted { get; set; }
-
-        public DateTime SpecialtyPickupDay { get; set; }
-        [NotMapped]
-        public ICollection<OneTimePickup> AllSpecialtyPickups { get; set; }
-
+        // Account Current balance (Fees-Minus Payments)
         [Display(Name = "Current Balance")]
         public double OutstandingBalance { get; set; }
+
+        // Trash Collection Details
+        [Required]
+        public string WeeklyPickupDay { get; set; }
+        // Specialty/One Time Pickup
+        public bool? SpecialtyPickupCompleted { get; set; }
+        public DateTime SpecialtyPickupDay { get; set; }
+        
         [Display(Name = "Start of Service Pause")]
         public DateTime StartDate { get; set; }
         [Display(Name = "End of Service Pause")]
         public DateTime EndDate { get; set; }
+
+        // Foreign Keys
+        [ForeignKey("IdentityUser")]
+        public string IdentityUserId { get; set; }
+        public IdentityUser IdentityUser { get; set; }
+
         [NotMapped]
         public bool HasServiceStop
         {
@@ -73,20 +94,9 @@ namespace TrashCollection.Models
                 return;
             }
         }
-
-        [Required]
-        public string Address { get; set; }
-        [Required]
-        [RegularExpression(@"\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zip")]
-        [Display(Name = "5-Digit Zip Code")]
-        public string ZipCode { get; set; }
-
-
-        [ForeignKey("IdentityUser")]
-        public string IdentityUserId { get; set; }
-        public IdentityUser IdentityUser { get; set; }
-
-
+        [NotMapped]
+        public string AbbrvName { get { return FirstName != null ? FirstName + " " + FamilyName[0] + "." : "unknown"; } }
+        // For ViewAccountTransaction View.
         [NotMapped]
         public List<AccountTransaction> AccountTransActions { get; set; }
 
