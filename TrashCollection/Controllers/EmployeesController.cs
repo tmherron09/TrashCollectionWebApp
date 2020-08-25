@@ -79,7 +79,7 @@ namespace TrashCollection.Controllers
                 return RedirectToAction("FinishRegistration");
             }
 
-            var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.Address, c => c.WeeklyPickupDay);
+            var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.StreetAddress, c => c.WeeklyPickupDay);
             employee.Addresses = addresses;
 
             return View(employee);
@@ -190,12 +190,18 @@ namespace TrashCollection.Controllers
                 double pickupFee = TrashPrices.GetOneTimePickupCost(customer);
                 customer.OutstandingBalance += pickupFee;
 
+                AccountTransaction serviceFee = new AccountTransaction();
+                serviceFee.CustomerId = customer.Id;
+                serviceFee.Fee = pickupFee;
+                serviceFee.TransactionDate = DateTime.Today;
+                serviceFee.TransactionType = "Specialty Pickup";
+
                 customer.SpecialtyPickupDay = DateTime.MinValue;
                 completedPickupInDb.HasBeenPickedup = true;
                 _context.SaveChanges();
 
                 var employee = _context.Employees.Where(e => e.Id == completedPickupInDb.EmployeeId).SingleOrDefault();
-                var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.Address, c => c.WeeklyPickupDay);
+                var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.StreetAddress, c => c.WeeklyPickupDay);
                 employee.Addresses = addresses;
                 return View("Index", employee);
 
@@ -205,7 +211,7 @@ namespace TrashCollection.Controllers
             {
                 //completedPickupInDb = _context.OneTimePickups.Where(o => o == (OneTimePickup)completedPickup).Single();
                 var employee = _context.Employees.Where(e => e.Id == completedPickupInDb.EmployeeId).SingleOrDefault();
-                var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.Address, c => c.WeeklyPickupDay);
+                var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.StreetAddress, c => c.WeeklyPickupDay);
                 employee.Addresses = addresses;
                 return View("Index", employee);
             }
@@ -227,7 +233,7 @@ namespace TrashCollection.Controllers
             try
             {
                 //mapUrl =  await GetGoogleMapsApiUrl(customer);
-                query = HttpUtility.UrlEncode(customer.Address + "," + customer.ZipCode);
+                query = HttpUtility.UrlEncode(customer.StreetAddress + "," + customer.ZipCode);
                 googleMapsApiUrlRequest = "https://www.google.com/maps/embed/v1/place?***REMOVED***&q=" + query;
             }
             catch
@@ -237,7 +243,7 @@ namespace TrashCollection.Controllers
             }
 
             employee.Addresses = new Dictionary<string, string>();
-            employee.Addresses.Add($"{customer.FamilyName} residence: {customer.Address}, {customer.ZipCode}", googleMapsApiUrlRequest);
+            employee.Addresses.Add($"{customer.FamilyName} residence: {customer.StreetAddress}, {customer.ZipCode}", googleMapsApiUrlRequest);
 
 
             return View(employee);
@@ -265,7 +271,7 @@ namespace TrashCollection.Controllers
 
             foreach (var customer in customers)
             {
-                string query = HttpUtility.UrlEncode(customer.Address + "," + customer.ZipCode);
+                string query = HttpUtility.UrlEncode(customer.StreetAddress + "," + customer.ZipCode);
                 Uri googleMapsApiUriRequest = new Uri("https://maps.googleapis.com/maps/api/geocode/json?&address=" + query + "&***REMOVED***");
 
 
