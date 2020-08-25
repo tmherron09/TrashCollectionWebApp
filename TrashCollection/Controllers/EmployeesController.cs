@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 using TrashCollection.Data;
 using TrashCollection.Models;
+using TrashCollection.ViewModels.Employees;
 
 namespace TrashCollection.Controllers
 {
@@ -69,10 +73,30 @@ namespace TrashCollection.Controllers
             var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.Address, c => c.WeeklyPickupDay);
             employee.Addresses = addresses;
 
-
-
             return View(employee);
         }
+
+        
+        //public ActionResult Index(string message)
+        //{
+        //    var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+
+        //    var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.Address, c => c.WeeklyPickupDay);
+
+        //    EmployeesIndexViewModel employeesIndexViewModel = new EmployeesIndexViewModel()
+        //    {
+        //        //EmployeeId = employee.Id,
+        //        AbbrvName = employee.AbbrvName,
+        //        AssignedZipCode = employee.AssignedZipCode,
+        //        Addresses = addresses,
+        //        Title = "Index",
+        //        Message = message
+        //    };
+
+        //    return View("IndexVM", employeesIndexViewModel);
+        //}
+
 
 
         // GET: EmployeesController/Details/5
@@ -179,12 +203,61 @@ namespace TrashCollection.Controllers
         }
 
 
-        public IActionResult AddressMap()
+        public IActionResult AddressMap(int id)
         {
-            Customer customer = new Customer();
+            
+            Customer customer = _context.Customers.Where(c => c.Id == id).SingleOrDefault();
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+
+            string mapUrl;
+            string query;
+            string googleMapsApiUrlRequest;
 
 
-            return View(customer);
+            //Html encode (spaces, periods, etc)
+            try
+            {
+                //mapUrl =  await GetGoogleMapsApiUrl(customer);
+                query = HttpUtility.UrlEncode(customer.Address + "," + customer.ZipCode);
+                googleMapsApiUrlRequest = "https://www.google.com/maps/embed/v1/place?***REMOVED***&q=" + query;
+            }
+            catch
+            {
+                // Unsure how to call error log.
+                return View("Index");
+            }
+
+            employee.Addresses = new Dictionary<string, string>();
+            employee.Addresses.Add($"{customer.FamilyName} residence: {customer.Address}, {customer.ZipCode}", googleMapsApiUrlRequest);
+
+
+            return View(employee);
+        }
+
+
+        // Unused currently, will be brough back to utilize Google Maps static/javascript
+        public async Task<string> GetGoogleMapsApiUrl(Customer customer)
+        {
+            HttpClient client = new HttpClient();
+
+            string query = HttpUtility.UrlEncode(customer.Address + "," + customer.ZipCode);
+            string googleMapsApiUrlRequest = "https://www.google.com/maps/embed/v1/place?***REMOVED***&q=" + query;
+
+            HttpResponseMessage response = await client.GetAsync(googleMapsApiUrlRequest);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+
+
+                return content;
+            }
+            else
+            {
+                throw new Exception();
+            }
+            
         }
 
     }

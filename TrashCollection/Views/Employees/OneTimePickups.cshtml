@@ -60,23 +60,9 @@
                             </form>
                         </td>*@
                     <td>
-                        <a asp-action="ViewOnMap" asp-route-id="@item.Id" class="btn btn-outline-danger">View On Map</a>
+                        <a asp-action="AddressMap" asp-route-id="@item.CustomerId" class="btn btn-outline-danger">View On Map</a>
                     </td>
                     <td>
-                        @*<form asp-action="PickupCompleted" method="post">
-                                <div class="form-group">
-                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-                                    <input type="hidden" asp-for="@item.Id" />
-                                    <input type="hidden" asp-for="@item.PickUpDate" />
-                                    <input type="hidden" asp-for="@item.HasBeenPickedup" />
-                                    <input type="hidden" asp-for="@item.CustomerId" />
-                                    <input type="hidden" asp-for="@item.EmployeeId" />
-
-                                    <input type="submit" value="Confirm Pickup" class="btn btn-outline-danger" />
-                                </div>
-                            </form>*@
-
                         <a asp-action="PickupCompleted" asp-route-id="@item.Id" class="btn btn-outline-danger">Confirm Pickup</a>
 
                     </td>
