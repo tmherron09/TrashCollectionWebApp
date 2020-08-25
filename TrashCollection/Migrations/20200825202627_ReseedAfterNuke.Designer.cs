@@ -10,8 +10,8 @@ using TrashCollection.Data;
 namespace TrashCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200821124952_AllowNullableEIDOneTimePickup")]
-    partial class AllowNullableEIDOneTimePickup
+    [Migration("20200825202627_ReseedAfterNuke")]
+    partial class ReseedAfterNuke
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,15 +50,15 @@ namespace TrashCollection.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "cc877c5d-39b2-4692-83d2-e7435c4b569b",
-                            ConcurrencyStamp = "e93b712d-ac85-494a-a25f-ba6f5da8e86e",
+                            Id = "77804d2d-6ed6-4bfb-9bb2-228dfc85511d",
+                            ConcurrencyStamp = "687c3c60-099d-420b-b260-7b4234a73813",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "a62c11d1-5188-4495-9d64-759832b6d12d",
-                            ConcurrencyStamp = "aa543996-6af6-4f82-80e9-e2fe79d08646",
+                            Id = "b85b4003-a274-4bc3-b503-f7ab36bd06f6",
+                            ConcurrencyStamp = "f8273058-b9ac-46a5-8d30-587cc4cfaabc",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -233,6 +233,33 @@ namespace TrashCollection.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("TrashCollection.Models.AccountTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Fee")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("AccountTransactions");
+                });
+
             modelBuilder.Entity("TrashCollection.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
@@ -326,6 +353,17 @@ namespace TrashCollection.Migrations
                     b.HasIndex("IdentityUserId");
 
                     b.ToTable("Employees");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AssignedZipCode = "00000",
+                            EmailAddress = "default@trash.com",
+                            FamilyName = "Fail Case",
+                            FirstName = "Default Employee",
+                            PhoneNumber = "555-555-5555"
+                        });
                 });
 
             modelBuilder.Entity("TrashCollection.Models.OneTimePickup", b =>
@@ -403,6 +441,15 @@ namespace TrashCollection.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TrashCollection.Models.AccountTransaction", b =>
+                {
+                    b.HasOne("TrashCollection.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

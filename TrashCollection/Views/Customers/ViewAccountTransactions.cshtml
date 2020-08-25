@@ -1,0 +1,49 @@
+﻿@model TrashCollection.Models.Customer
+
+@{
+    ViewData["Title"] = "ViewAccountTransactions";
+    Layout = "~/Views/Shared/_Layout_Customer.cshtml";
+}
+
+<h1>ViewAccountTransactions</h1>
+
+<hr />
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>
+                Transaction Number
+            </th>
+            <th>
+                Amount
+            </th>
+            <th>
+                Transaction Name
+            </th>
+            <th>
+                Date of Transaction
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.AccountTransActions) {
+        <tr>
+            <td>
+                @item.Id
+            </td>
+            <td>
+                @item.Fee.ToString("C")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TransactionType)
+            </td>
+            <td>
+                @item.TransactionDate.ToString("MM/dd/yyyy")
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<p>Current Remaining Balance: @Model.OutstandingBalance.ToString("C") </p>

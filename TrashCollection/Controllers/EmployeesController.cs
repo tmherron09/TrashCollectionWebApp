@@ -219,7 +219,6 @@ namespace TrashCollection.Controllers
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
 
-            string mapUrl;
             string query;
             string googleMapsApiUrlRequest;
 

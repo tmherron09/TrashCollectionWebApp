@@ -38,10 +38,10 @@
             @Html.DisplayFor(model => model.WeeklyPickupDay)
         </dd>
         <dt class="col-sm-4">
-            @Html.DisplayNameFor(model => model.CurrentBalance)
+            @Html.DisplayNameFor(model => model.OutstandingBalance)
         </dt>
         <dd class="col-sm-8">
-            @Html.DisplayFor(model => model.CurrentBalance)
+            @Model.OutstandingBalance.ToString("C")
         </dd>
         @if (Model.HasServiceStop)
         {

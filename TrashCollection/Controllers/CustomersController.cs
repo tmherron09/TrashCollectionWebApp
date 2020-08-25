@@ -177,5 +177,15 @@ namespace TrashCollection.Controllers
             //return View("Index", customer);
             return RedirectToAction(nameof(Index), new { message = "Trash Collection services have been successfully resumed. You can pause service again at anytime from the \"Pause or Start Service\" option." });
         }
+
+        public IActionResult ViewAccountTransactions(int id)
+        {
+            Customer customer = _context.Customers.Where(c => c.Id == id).SingleOrDefault();
+
+            customer.AccountTransActions = _context.AccountTransactions.Where(a => a.CustomerId == customer.Id).ToList();
+
+            return View(customer);
+
+        }
     }
 }

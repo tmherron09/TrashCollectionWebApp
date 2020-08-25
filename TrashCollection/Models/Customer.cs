@@ -14,7 +14,6 @@ namespace TrashCollection.Models
 
         public Customer()
         {
-            OutstandingBalance = TrashPrices.MonthlyFee;
             HasServiceStop = false;
             SpecialtyPickupCompleted = false;
             SpecialtyPickupDay = DateTime.MinValue;
@@ -41,30 +40,16 @@ namespace TrashCollection.Models
         [Required(ErrorMessage = "Phone Number is a Required Input")]
         public string PhoneNumber { get; set; }
 
-
         public string WeeklyPickupDay { get; set; }
 
-
-
-        
         public bool? SpecialtyPickupCompleted { get; set; }
 
         public DateTime SpecialtyPickupDay { get; set; }
         [NotMapped]
         public ICollection<OneTimePickup> AllSpecialtyPickups { get; set; }
 
-
-
-        public double OutstandingBalance { get; set; }
-        [NotMapped]
         [Display(Name = "Current Balance")]
-        public string CurrentBalance
-        {
-            get
-            {
-                return OutstandingBalance.ToString("C");
-            }
-        }
+        public double OutstandingBalance { get; set; }
         [Display(Name = "Start of Service Pause")]
         public DateTime StartDate { get; set; }
         [Display(Name = "End of Service Pause")]
@@ -101,6 +86,9 @@ namespace TrashCollection.Models
         public string IdentityUserId { get; set; }
         public IdentityUser IdentityUser { get; set; }
 
+
+        [NotMapped]
+        public List<AccountTransaction> AccountTransActions { get; set; }
 
     }
 }

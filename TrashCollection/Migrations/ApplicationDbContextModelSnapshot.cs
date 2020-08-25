@@ -48,15 +48,15 @@ namespace TrashCollection.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f9f14b35-857b-43d6-9617-0062ae0a77cb",
-                            ConcurrencyStamp = "5ff43569-5758-4b23-b3d5-d14cab74abfd",
+                            Id = "77804d2d-6ed6-4bfb-9bb2-228dfc85511d",
+                            ConcurrencyStamp = "687c3c60-099d-420b-b260-7b4234a73813",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "60201510-eec8-4bd1-aa46-392ebb8eab25",
-                            ConcurrencyStamp = "c0930c8c-6e65-4e9e-8d2c-2eb75a263498",
+                            Id = "b85b4003-a274-4bc3-b503-f7ab36bd06f6",
+                            ConcurrencyStamp = "f8273058-b9ac-46a5-8d30-587cc4cfaabc",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -229,6 +229,33 @@ namespace TrashCollection.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("TrashCollection.Models.AccountTransaction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Fee")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("TransactionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.ToTable("AccountTransactions");
                 });
 
             modelBuilder.Entity("TrashCollection.Models.Customer", b =>
@@ -412,6 +439,15 @@ namespace TrashCollection.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("TrashCollection.Models.AccountTransaction", b =>
+                {
+                    b.HasOne("TrashCollection.Models.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TrashCollection.Migrations
 {
-    public partial class UpdateCustomerStartEndDateTimeAfterNuke : Migration
+    public partial class ReseedAfterNuke : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -208,6 +208,28 @@ namespace TrashCollection.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AccountTransactions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<int>(nullable: false),
+                    Fee = table.Column<double>(nullable: false),
+                    TransactionType = table.Column<string>(nullable: false),
+                    TransactionDate = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountTransactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AccountTransactions_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OneTimePickups",
                 columns: table => new
                 {
@@ -238,12 +260,22 @@ namespace TrashCollection.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "2750bc28-4fe7-45d4-bbcc-407b7f0844dc", "49937dad-b10c-4a62-ae6a-c99afb746f12", "Employee", "EMPLOYEE" });
+                values: new object[] { "77804d2d-6ed6-4bfb-9bb2-228dfc85511d", "687c3c60-099d-420b-b260-7b4234a73813", "Employee", "EMPLOYEE" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "7278eaa6-2c5b-4830-9a94-a62a501e3345", "4447b6d8-0be8-4d57-a3bd-d931cd064900", "Customer", "CUSTOMER" });
+                values: new object[] { "b85b4003-a274-4bc3-b503-f7ab36bd06f6", "f8273058-b9ac-46a5-8d30-587cc4cfaabc", "Customer", "CUSTOMER" });
+
+            migrationBuilder.InsertData(
+                table: "Employees",
+                columns: new[] { "Id", "AssignedZipCode", "EmailAddress", "FamilyName", "FirstName", "IdentityUserId", "PhoneNumber" },
+                values: new object[] { 1, "00000", "default@trash.com", "Fail Case", "Default Employee", null, "555-555-5555" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountTransactions_CustomerId",
+                table: "AccountTransactions",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -307,6 +339,9 @@ namespace TrashCollection.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AccountTransactions");
+
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
