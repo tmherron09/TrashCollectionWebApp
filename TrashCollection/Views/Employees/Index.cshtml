@@ -24,7 +24,7 @@
     <h3>Assigned Zip Code: @Html.DisplayFor(model => model.AssignedZipCode)</h3>
 
     AddressMap
-    <a asp-action="AddressMap">Test Map</a>
+    <a asp-action="AddressMapView" asp-route-id="@Model.Id">Test Map</a>
 
 
     @* Start of Daily Pickups Card/Table *@

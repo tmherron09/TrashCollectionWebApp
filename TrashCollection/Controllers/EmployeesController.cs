@@ -1,18 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TrashCollection.Data;
 using TrashCollection.Models;
 using TrashCollection.ViewModels.Employees;
@@ -23,9 +28,13 @@ namespace TrashCollection.Controllers
     public class EmployeesController : Controller
     {
         private ApplicationDbContext _context;
+
+        private static readonly HttpClient HttpClient = new HttpClient();
+
         public EmployeesController(ApplicationDbContext context)
         {
             _context = context;
+            
         }
 
 
@@ -76,7 +85,7 @@ namespace TrashCollection.Controllers
             return View(employee);
         }
 
-        
+
         //public ActionResult Index(string message)
         //{
         //    var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -205,7 +214,7 @@ namespace TrashCollection.Controllers
 
         public IActionResult AddressMap(int id)
         {
-            
+
             Customer customer = _context.Customers.Where(c => c.Id == id).SingleOrDefault();
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
@@ -235,29 +244,54 @@ namespace TrashCollection.Controllers
             return View(employee);
         }
 
+        public async Task<IActionResult> AddressMapView(int id)
+        {
+            Employee employee = _context.Employees.Where(e => e.Id == id).Single();
+
+            var customers = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToList();
+
+            var locations = await GetMultipleCustomerLongLat(customers);
+
+
+            return View(locations);
+
+        }
+
 
         // Unused currently, will be brough back to utilize Google Maps static/javascript
-        public async Task<string> GetGoogleMapsApiUrl(Customer customer)
+        public async Task<Queue<LocationResponse>> GetMultipleCustomerLongLat(List<Customer> customers)
         {
-            HttpClient client = new HttpClient();
 
-            string query = HttpUtility.UrlEncode(customer.Address + "," + customer.ZipCode);
-            string googleMapsApiUrlRequest = "https://www.google.com/maps/embed/v1/place?***REMOVED***&q=" + query;
+            Queue<LocationResponse> locations = new Queue<LocationResponse>();
 
-            HttpResponseMessage response = await client.GetAsync(googleMapsApiUrlRequest);
-
-            if (response.IsSuccessStatusCode)
+            foreach (var customer in customers)
             {
+                string query = HttpUtility.UrlEncode(customer.Address + "," + customer.ZipCode);
+                Uri googleMapsApiUriRequest = new Uri("https://maps.googleapis.com/maps/api/geocode/json?&address=" + query + "&***REMOVED***");
+
+
+
+                var response = await HttpClient.GetAsync(googleMapsApiUriRequest);
+
+                response.EnsureSuccessStatusCode();
+
                 var content = await response.Content.ReadAsStringAsync();
 
+                JObject jsonString = JObject.Parse(content);
 
-                return content;
+                var location = JsonConvert.DeserializeObject<LocationResponse>(content);
+
+
+
+
+
+                locations.Enqueue(location);
+
             }
-            else
-            {
-                throw new Exception();
-            }
-            
+
+            return locations;
+
+
         }
 
     }

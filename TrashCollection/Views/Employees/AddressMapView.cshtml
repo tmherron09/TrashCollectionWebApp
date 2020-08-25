@@ -1,0 +1,59 @@
+﻿@model IEnumerable<LocationResponse>
+@{
+    ViewData["Title"] = "AddressMapView";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>AddressMapView</h1>
+
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-sm-7" style="max-height: 75vh;">
+        <div class="card">
+            <div class="card-header">
+                Pickup Locations
+            </div>
+            <div class="card-body embed-responsive embed-responsive-1by1">
+                <div id="map" class="embed-responsive-item"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?***REMOVED***&callback=initMap&libraries=&v=weekly"
+            defer></script>
+    <script>
+        let map;
+
+        function initMap() {
+
+            map = new google.maps.Map(document.getElementById("map"));
+            bounds = new google.maps.LatLngBounds();
+
+
+
+            @foreach(var item in Model)
+            {
+            <Text>
+            var location = {
+                    lat: @item.results[0].Geometry.Location.lat,
+                    lng: @item.results[0].Geometry.Location.lng
+                    }
+
+
+                var marker = new google.maps.Marker({ position: location, map: map })
+                var loc = new google.maps.LatLng(marker.position.lat(), marker.position.lng());
+                bounds.extend(loc);
+                            </Text>
+            }
+
+                map.fitBounds(bounds);
+            map.panToBounds(bounds);
+        }
+    </script>
+
+}

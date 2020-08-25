@@ -8,21 +8,23 @@
 <h1>AddressMap</h1>
 
 <hr />
+@foreach (var item in Model.Addresses)
+{
+    <div class="row justify-content-center">
+        <div class="col-sm-7">
+            <div class="card">
 
-<div class="row justify-content-center">
-    <div class="col-sm-9">
-        <div class="card">
-
-            <div class="card-header bg-info text-light">
-                Address: @Model.Addresses.First().Key
-            </div>
-            <div class="card-body embed-responsive embed-responsive-1by1">
-                <iframe class="embed-responsive-item"
-                        frameborder="0"
-                        style="border: 0 ;"
-                        src="@Model.Addresses.First().Value" allowfullscreen>
-                </iframe>
+                <div class="card-header bg-info text-light">
+                    Address: @item.Key
+                </div>
+                <div class="card-body embed-responsive embed-responsive-1by1">
+                    <iframe class="embed-responsive-item"
+                            frameborder="0"
+                            style="border: 0 ;"
+                            src="@item.Value" allowfullscreen>
+                    </iframe>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
