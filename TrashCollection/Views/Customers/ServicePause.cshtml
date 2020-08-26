@@ -1,7 +1,7 @@
 ﻿@model TrashCollection.Models.Customer
 
 @{
-    ViewData["Title"] = "Specialty Pickup";
+    ViewData["Title"] = "Pause or Resume Service";
     Layout = "~/Views/Shared/_Layout_Customer.cshtml";
 }
 
@@ -11,7 +11,7 @@
 <hr />
 <div class="card mx-auto">
     <div class="card-header">
-        <h3>Specialty Pickup One-Time Service</h3>
+        <h3>Pause or Resume Service</h3>
     </div>
 
     <div class="card-body">
@@ -55,7 +55,7 @@
                     </h5>
                     <h5>End Date: @dateFormattedEnd</h5>
                     <hr />
-                    <a asp-action="EndServicePause" asp-route-id="@Model.Id" class="btn btn-light">End Service Early</a>
+                    <a asp-action="EndServicePause" asp-route-id="@Model.Id" class="btn btn-light">Resume Service Early</a>
                 </div>
             </div>
             
