@@ -13,14 +13,16 @@ namespace TrashCollection.Models
         [Key]
         public int Id { get; set; }
 
+
+        // Name
         [Display(Name = "First Name")]
         [Required(ErrorMessage = "First Name is a Required Input")]
         public string FirstName { get; set; }
         [Display(Name = "Family/Last Name")]
         [Required(ErrorMessage = "Family/Last Name is a Required Input")]
         public string FamilyName { get; set; }
-        [NotMapped]
-        public string AbbrvName { get { return FirstName + " " + FamilyName[0] + "."; } }
+        
+        // Contact
         [Required(ErrorMessage = "Email is a Required Input")]
         [EmailAddress]
         [Display(Name = "Email")]
@@ -32,17 +34,21 @@ namespace TrashCollection.Models
 
 
 
-        // Change to Zone/Trash Route
+        // Assignment
         [RegularExpression(@"\d{5}(-\d{4})?$", ErrorMessage = "Invalid Zip")]
         [Display(Name = "Assigned 5-Digit Zip Code Area")]
         public string AssignedZipCode { get; set; }
-        [NotMapped]
-        public Dictionary<string, string> Addresses{ get; set; }
-        
 
+        // Foreign Keys
         [ForeignKey("IdentityUser")]
         public string IdentityUserId { get; set; }
         public IdentityUser IdentityUser { get; set; }
 
+
+
+        [NotMapped]
+        public Dictionary<string, string> Addresses{ get; set; }
+        [NotMapped]
+        public string AbbrvName { get { return FirstName + " " + FamilyName[0] + "."; } }
     }
 }

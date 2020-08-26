@@ -1,11 +1,10 @@
 ﻿@model IEnumerable<LocationResponse>
 @{
     ViewData["Title"] = "AddressMapView";
-
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_Layout_Employee.cshtml";
 }
 
-<h1>AddressMapView</h1>
+<h1>Map View</h1>
 
 <hr />
 
@@ -15,9 +14,20 @@
             <div class="card-header">
                 Pickup Locations
             </div>
-            <div class="card-body embed-responsive embed-responsive-1by1">
-                <div id="map" class="embed-responsive-item"></div>
-            </div>
+            @if (Model.Any())
+            {
+                <div class="card-body embed-responsive embed-responsive-1by1">
+
+                    <div id="map" class="embed-responsive-item"></div>
+
+                </div>
+            }
+            else
+            {
+                <div class="text-center my-3">
+                    <h3>No Pickups Found</h3>
+                </div>
+            }
         </div>
     </div>
 </div>

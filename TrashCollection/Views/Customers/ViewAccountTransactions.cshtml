@@ -29,9 +29,9 @@
     <tbody>
 @foreach (var item in Model.AccountTransActions) {
         <tr>
-            <td>
+            <th scope="row">
                 @item.Id
-            </td>
+            </th>
             <td>
                 @item.Fee.ToString("C")
             </td>

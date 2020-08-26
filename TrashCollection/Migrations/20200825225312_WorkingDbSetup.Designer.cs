@@ -10,8 +10,8 @@ using TrashCollection.Data;
 namespace TrashCollection.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200825202627_ReseedAfterNuke")]
-    partial class ReseedAfterNuke
+    [Migration("20200825225312_WorkingDbSetup")]
+    partial class WorkingDbSetup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,15 +50,15 @@ namespace TrashCollection.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "77804d2d-6ed6-4bfb-9bb2-228dfc85511d",
-                            ConcurrencyStamp = "687c3c60-099d-420b-b260-7b4234a73813",
+                            Id = "a68e37ae-a1b1-42d5-89a0-a19c878fa687",
+                            ConcurrencyStamp = "3f20a0e4-3051-44b9-97f3-e15a944135c4",
                             Name = "Employee",
                             NormalizedName = "EMPLOYEE"
                         },
                         new
                         {
-                            Id = "b85b4003-a274-4bc3-b503-f7ab36bd06f6",
-                            ConcurrencyStamp = "f8273058-b9ac-46a5-8d30-587cc4cfaabc",
+                            Id = "4ced078f-0ef6-48de-9fd2-ae71610392e9",
+                            ConcurrencyStamp = "754d60de-8ba0-4610-bbcd-8b95aca7c61c",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         });
@@ -267,7 +267,7 @@ namespace TrashCollection.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Address")
+                    b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -305,7 +305,12 @@ namespace TrashCollection.Migrations
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("StreetAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("WeeklyPickupDay")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ZipCode")

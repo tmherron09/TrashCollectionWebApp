@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Finish Registering</h1>
+<h1>Registration: Final Steps</h1>
 
 <h4>@Html.DisplayNameFor(model => model.EmailAddress)</h4>
 
@@ -34,6 +34,7 @@
                 <span asp-validation-for="AssignedZipCode" class="text-danger"></span>
             </div>
             <br />
+            <hr />
             <div class="form-group">
                 <input type="submit" value="FinishRegistration" class="btn-primary" />
             </div>

@@ -1,0 +1,48 @@
+﻿@model TrashCollection.Models.LocationResponse
+@{
+    ViewData["Title"] = "AddressMapView";
+    Layout = "~/Views/Shared/_Layout_Employee.cshtml";
+}
+
+<h1>AddressMapView</h1>
+
+<hr />
+
+<div class="row justify-content-center">
+    <div class="col-sm-7" style="max-height: 75vh;">
+        <div class="card">
+            <div class="card-header">
+                Pickup Locations
+            </div>
+            <div class="card-body embed-responsive embed-responsive-1by1">
+                <div id="map" class="embed-responsive-item"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?***REMOVED***&callback=initMap&libraries=&v=weekly"
+            defer></script>
+    <script>
+        let map;
+
+        function initMap() {
+
+            var location = {
+                    lat: @Model.results[0].Geometry.Location.lat,
+                    lng: @Model.results[0].Geometry.Location.lng
+                    }
+
+            map = new google.maps.Map(document.getElementById("map"),
+                {
+                    center: location,
+                    zoom: 18
+                });
+
+                var marker = new google.maps.Marker({ position: location, map: map })
+        }
+    </script>
+
+}

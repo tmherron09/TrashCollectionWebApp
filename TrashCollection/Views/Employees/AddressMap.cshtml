@@ -1,7 +1,9 @@
 ﻿@model TrashCollection.Models.Employee
 @{
     ViewData["Title"] = "Customer Address on Map";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["EmployeeId"] = Model.Id;
+    Layout = "~/Views/Shared/_Layout_Employee.cshtml";
+
 }
 
 

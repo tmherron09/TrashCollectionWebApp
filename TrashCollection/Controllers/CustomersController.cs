@@ -78,9 +78,6 @@ namespace TrashCollection.Controllers
             return View(customer);
         }
         
-
-      
-
         // GET: CustomersController/Edit/5
         public IActionResult ChangePickUpDay(int id)
         {
@@ -182,7 +179,7 @@ namespace TrashCollection.Controllers
         {
             Customer customer = _context.Customers.Where(c => c.Id == id).SingleOrDefault();
 
-            customer.AccountTransActions = _context.AccountTransactions.Where(a => a.CustomerId == customer.Id).ToList();
+            customer.AccountTransActions = _context.AccountTransactions.Where(a => a.CustomerId == customer.Id).OrderBy(t=> t.TransactionDate).ToList();
 
             return View(customer);
 

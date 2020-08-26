@@ -108,3 +108,7 @@ body {
 #map {
     height: 100%;
 }
+
+table a {
+    color: snow; 
+}

@@ -2,16 +2,18 @@
 
 @{
     ViewData["Title"] = "OneTimePickups";
-    Layout = "~/Views/Shared/_Layout.cshtml";
-
+    Layout = "~/Views/Shared/_Layout_Employee.cshtml";
 }
 
 <h1>One-Time Pickups</h1>
-<h3>@ViewBag.ListFor</h3>
 
+<div class="alert alert-info">
+    <strong>@ViewBag.ListFor</strong>
+</div>
 
+<hr />
 
-<table class="table">
+<table class="table table-bordered">
     <thead>
         <tr>
             <th>
@@ -38,6 +40,9 @@
                         <strong>No Currently Pending Pickups.</strong>
                     </div>
                 </td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
         }
         else
@@ -51,20 +56,13 @@
                         @dateFormatted
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Customer.Address)
+                        @Html.DisplayFor(modelItem => item.Customer.StreetAddress)
                     </td>
-                    @*<td>
-                            <form asp-action="ViewOnMap">
-                                <input type="hidden" asp-for="@items[i]" />
-                                <input type="submit" value="View On Map" class="btn btn-outline-secondary disabled">
-                            </form>
-                        </td>*@
                     <td>
-                        <a asp-action="AddressMap" asp-route-id="@item.CustomerId" class="btn btn-outline-danger">View On Map</a>
+                        <a asp-action="AddressMapViewIndividual" asp-route-id="@item.CustomerId" class="btn btn-outline-danger">View On Map</a>
                     </td>
                     <td>
                         <a asp-action="PickupCompleted" asp-route-id="@item.Id" class="btn btn-outline-danger">Confirm Pickup</a>
-
                     </td>
                 </tr>
             }

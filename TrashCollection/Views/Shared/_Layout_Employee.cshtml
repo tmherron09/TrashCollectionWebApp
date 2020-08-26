@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Trash Collection Company</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/emp_Bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Trash Collection Company</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <partial name="_LoginPartial" />
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container ">
+        <main role="main" class="pb-3 ">
+
+            <div class="d-block d-sm-none mb-4">
+                <div class="btn-group-vertical btn-group-lg special" role="group">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-secondary btn-block dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Menu
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <a asp-action="Index" asp-route-id="@ViewData["EmployeeId"]" class="dropdown-item">Home</a>
+                        <a asp-action="TodaysPendingPickups" asp-route-id="@ViewData["EmployeeId"]" class="dropdown-item">
+                            Pending One Time Pickups Today
+                        </a>
+                        <a asp-action="AllPendingPickups" asp-route-id="@ViewData["EmployeeId"]" class="dropdown-item">
+                            All Pending One Time Pickups
+                        </a>
+                        <a asp-action="AllPendingPickups" asp-route-id="@ViewData["EmployeeId"]" class="dropdown-item">
+                            Pickup Completion
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container row">
+                <div class="col-sm-3 h-100 my-auto">
+
+
+                    <div class=" d-none d-sm-block">
+                        <div class="btn-group-vertical btn-group-lg">
+                            <a asp-action="Index" asp-route-id="@ViewData["EmployeeId"]" class="btn btn-light">Home</a>
+                            <a asp-action="TodaysPendingPickups" asp-route-id="@ViewData["EmployeeId"]" class="btn btn-light">
+                                Pending One Time Pickups Today
+                            </a>
+                            <a asp-action="AllPendingPickups" asp-route-id="@ViewData["EmployeeId"]" class="btn btn-light">
+                                All Pending One Time Pickups
+                            </a>
+                            <a asp-action="AllPendingPickups" asp-route-id="@ViewData["EmployeeId"]" class="btn btn-light">
+                                Pickup Completion
+                            </a>
+                            <a asp-action="AddressMapView" asp-route-id="@ViewData["EmployeeId"]" class="btn btn-light">
+                                View Pickups On Map
+                            </a>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-9 h-100 my-auto">
+
+                    @RenderBody()
+
+                </div>
+            </div>
+
+        </main>
+        <footer class="container border-top text-muted" style="position: absolute; min-height: 10vh">
+            <div class="container">
+                &copy; 2020 - Trash Collection Company
+            </div>
+        </footer>
+    </div>
+
+
+    
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

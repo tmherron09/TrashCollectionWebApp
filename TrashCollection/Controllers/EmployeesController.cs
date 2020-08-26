@@ -38,6 +38,37 @@ namespace TrashCollection.Controllers
         }
 
 
+        public IActionResult Index()
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+            if (employee == null)
+            {
+                return RedirectToAction("FinishRegistration");
+            }
+
+            var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.StreetAddress, c => c.WeeklyPickupDay);
+            employee.Addresses = addresses;
+
+            return View(employee);
+        }
+        [HttpGet]
+        public IActionResult Index(string message)
+        {
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+
+            if (employee == null)
+            {
+                return RedirectToAction("FinishRegistration");
+            }
+
+            employee.Addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.StreetAddress, c => c.WeeklyPickupDay);
+
+            EmployeesIndexViewModel employeeIndexViewModel = new EmployeesIndexViewModel(employee, _context);
+
+            return View(employeeIndexViewModel);
+        }
 
         // Get: Finish Registration
         public IActionResult FinishRegistration()
@@ -61,7 +92,9 @@ namespace TrashCollection.Controllers
                 _context.Add(employee);
                 _context.SaveChanges();
 
-                return RedirectToAction(nameof(Index));
+                EmployeesIndexViewModel employeeIndexViewModel = new EmployeesIndexViewModel(employee, _context, "Registration Complete");
+
+                return View("Index", employeeIndexViewModel);
             }
             catch
             {
@@ -70,62 +103,11 @@ namespace TrashCollection.Controllers
             }
         }
 
-        public ActionResult Index()
-        {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
-            if (employee == null)
-            {
-                return RedirectToAction("FinishRegistration");
-            }
-
-            var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.StreetAddress, c => c.WeeklyPickupDay);
-            employee.Addresses = addresses;
-
-            return View(employee);
-        }
-
-
-        //public ActionResult Index(string message)
-        //{
-        //    var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        //    var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
-
-        //    var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.Address, c => c.WeeklyPickupDay);
-
-        //    EmployeesIndexViewModel employeesIndexViewModel = new EmployeesIndexViewModel()
-        //    {
-        //        //EmployeeId = employee.Id,
-        //        AbbrvName = employee.AbbrvName,
-        //        AssignedZipCode = employee.AssignedZipCode,
-        //        Addresses = addresses,
-        //        Title = "Index",
-        //        Message = message
-        //    };
-
-        //    return View("IndexVM", employeesIndexViewModel);
-        //}
-
-
-
-        // GET: EmployeesController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
-
-        // GET: EmployeesController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
 
         public IActionResult TodaysPendingPickups(int id)
         {
             try
             {
-
-
                 ViewBag.ListFor = "Today's Pending One-Time Pickups";
                 var pickupskWithEmployeeCustomer = _context.OneTimePickups
                     .Include(p => p.Customer);
@@ -134,8 +116,8 @@ namespace TrashCollection.Controllers
                                                                 p.HasBeenPickedup == false &&
                                                                 p.PickUpDate.DayOfYear == DateTime.Today.DayOfYear)
                                                                 .OrderBy(p => p.PickUpDate).AsEnumerable();
-                //var todaysPickups = pickups.Where(p => p.PickUpDate.DayOfYear == DateTime.Today.DayOfYear).
 
+                ViewData["EmployeeId"] = id;
 
                 return View("OneTimePickups", todaysPickups);
 
@@ -149,8 +131,6 @@ namespace TrashCollection.Controllers
         {
             try
             {
-                //var employee = _context.Employees.Where(e => e.Id == id).Single();
-
                 ViewBag.ListFor = "All Pending Pickups";
 
                 var pickupskWithEmployeeCustomer = _context.OneTimePickups
@@ -159,6 +139,7 @@ namespace TrashCollection.Controllers
                 //var pickups = pickupskWithEmployeeCustomer.Where(p => p.EmployeeId == id).OrderBy(p=> p.PickUpDate).ToList();
                 var pickups = pickupskWithEmployeeCustomer.Where(p => p.EmployeeId == id && p.HasBeenPickedup == false).OrderBy(p => p.PickUpDate).AsEnumerable();
 
+                ViewData["EmployeeId"] = id;
 
                 return View("OneTimePickups", pickups);
 
@@ -198,13 +179,17 @@ namespace TrashCollection.Controllers
 
                 customer.SpecialtyPickupDay = DateTime.MinValue;
                 completedPickupInDb.HasBeenPickedup = true;
+                _context.AccountTransactions.Add(serviceFee);
                 _context.SaveChanges();
 
                 var employee = _context.Employees.Where(e => e.Id == completedPickupInDb.EmployeeId).SingleOrDefault();
                 var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.StreetAddress, c => c.WeeklyPickupDay);
                 employee.Addresses = addresses;
-                return View("Index", employee);
 
+                EmployeesIndexViewModel employeesIndexView = new EmployeesIndexViewModel(employee, _context, "Pickup Confirmation Recieved.");
+
+                //return View("Index", employeesIndexView);
+                return Index("Pickup Confirmation Recieved.");
 
             }
             catch
@@ -213,56 +198,25 @@ namespace TrashCollection.Controllers
                 var employee = _context.Employees.Where(e => e.Id == completedPickupInDb.EmployeeId).SingleOrDefault();
                 var addresses = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToDictionary(c => c.StreetAddress, c => c.WeeklyPickupDay);
                 employee.Addresses = addresses;
-                return View("Index", employee);
+
+                EmployeesIndexViewModel employeesIndexView = new EmployeesIndexViewModel(employee, _context, "Pickup Confirmation Failed!");
+
+                return View("Index", employeesIndexView);
             }
         }
 
-
-        public IActionResult AddressMap(int id)
-        {
-
-            Customer customer = _context.Customers.Where(c => c.Id == id).SingleOrDefault();
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
-
-            string query;
-            string googleMapsApiUrlRequest;
-
-
-            //Html encode (spaces, periods, etc)
-            try
-            {
-                //mapUrl =  await GetGoogleMapsApiUrl(customer);
-                query = HttpUtility.UrlEncode(customer.StreetAddress + "," + customer.ZipCode);
-                googleMapsApiUrlRequest = "https://www.google.com/maps/embed/v1/place?***REMOVED***&q=" + query;
-            }
-            catch
-            {
-                // Unsure how to call error log.
-                return View("Index");
-            }
-
-            employee.Addresses = new Dictionary<string, string>();
-            employee.Addresses.Add($"{customer.FamilyName} residence: {customer.StreetAddress}, {customer.ZipCode}", googleMapsApiUrlRequest);
-
-
-            return View(employee);
-        }
+        
 
         public async Task<IActionResult> AddressMapView(int id)
         {
             Employee employee = _context.Employees.Where(e => e.Id == id).Single();
-
             var customers = _context.Customers.Where(c => c.ZipCode == employee.AssignedZipCode).ToList();
-
             var locations = await GetMultipleCustomerLongLat(customers);
 
+            ViewData["EmployeeId"] = employee.Id;
 
             return View(locations);
-
         }
-
-
         // Unused currently, will be brough back to utilize Google Maps static/javascript
         public async Task<Queue<LocationResponse>> GetMultipleCustomerLongLat(List<Customer> customers)
         {
@@ -271,33 +225,75 @@ namespace TrashCollection.Controllers
 
             foreach (var customer in customers)
             {
-                string query = HttpUtility.UrlEncode(customer.StreetAddress + "," + customer.ZipCode);
+                string query = HttpUtility.UrlEncode(customer.StreetAddress + "," + customer.City + "," + customer.ZipCode);
                 Uri googleMapsApiUriRequest = new Uri("https://maps.googleapis.com/maps/api/geocode/json?&address=" + query + "&***REMOVED***");
 
-
-
                 var response = await HttpClient.GetAsync(googleMapsApiUriRequest);
-
                 response.EnsureSuccessStatusCode();
-
                 var content = await response.Content.ReadAsStringAsync();
-
                 JObject jsonString = JObject.Parse(content);
-
                 var location = JsonConvert.DeserializeObject<LocationResponse>(content);
-
-
-
-
-
                 locations.Enqueue(location);
 
             }
 
             return locations;
-
-
         }
 
+        public async Task<IActionResult> AddressMapViewIndividual(int id)
+        {
+            Customer customer= _context.Customers.Where(e => e.Id == id).Single();
+            var locations = await GetSingleCustomerLongLat(customer);
+
+            // Populate _layout_Employee, temp fix
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+
+            ViewData["EmployeeId"] = employee.Id;
+            return View(locations);
+        }
+
+        public async Task<LocationResponse> GetSingleCustomerLongLat(Customer customer)
+        {
+
+                string query = HttpUtility.UrlEncode(customer.StreetAddress + "," + customer.City + "," + customer.ZipCode);
+                Uri googleMapsApiUriRequest = new Uri("https://maps.googleapis.com/maps/api/geocode/json?&address=" + query + "&***REMOVED***");
+
+                var response = await HttpClient.GetAsync(googleMapsApiUriRequest);
+                response.EnsureSuccessStatusCode();
+                var content = await response.Content.ReadAsStringAsync();
+                JObject jsonString = JObject.Parse(content);
+                var location = JsonConvert.DeserializeObject<LocationResponse>(content);
+
+            return location;
+        }
+
+        // Google Maps Embeded Api, No Long used, but kept for easy use/reference.
+        public IActionResult AddressMap(int id)
+        {
+
+            Customer customer = _context.Customers.Where(c => c.Id == id).SingleOrDefault();
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
+            string query;
+            string googleMapsApiUrlRequest;
+            //Html encode (spaces, periods, etc)
+            try
+            {
+                //mapUrl =  await GetGoogleMapsApiUrl(customer);
+                query = HttpUtility.UrlEncode(customer.StreetAddress + "," + customer.City + "," + customer.ZipCode);
+                googleMapsApiUrlRequest = "https://www.google.com/maps/embed/v1/place?***REMOVED***&q=" + query;
+            }
+            catch
+            {
+                // Todo: Call error log.
+                EmployeesIndexViewModel employeesIndexView = new EmployeesIndexViewModel(employee, _context, "Pickup Confirmation Failed!");
+
+                return View("Index", employeesIndexView);
+            }
+            employee.Addresses = new Dictionary<string, string>();
+            employee.Addresses.Add($"{customer.FamilyName} residence: {customer.StreetAddress}, {customer.City}, {customer.ZipCode}", googleMapsApiUrlRequest);
+            return View(employee);
+        }
     }
 }
