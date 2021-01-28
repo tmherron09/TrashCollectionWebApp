@@ -223,10 +223,12 @@ namespace TrashCollection.Controllers
 
             Queue<LocationResponse> locations = new Queue<LocationResponse>();
 
+            string key = "*INSERT API KEY";
+
             foreach (var customer in customers)
             {
                 string query = HttpUtility.UrlEncode(customer.StreetAddress + "," + customer.City + "," + customer.ZipCode);
-                Uri googleMapsApiUriRequest = new Uri("https://maps.googleapis.com/maps/api/geocode/json?&address=" + query + "&***REMOVED***");
+                Uri googleMapsApiUriRequest = new Uri("https://maps.googleapis.com/maps/api/geocode/json?&address=" + query + key);
 
                 var response = await HttpClient.GetAsync(googleMapsApiUriRequest);
                 response.EnsureSuccessStatusCode();
@@ -255,9 +257,9 @@ namespace TrashCollection.Controllers
 
         public async Task<LocationResponse> GetSingleCustomerLongLat(Customer customer)
         {
-
+                string key = "*INSERT API KEY";
                 string query = HttpUtility.UrlEncode(customer.StreetAddress + "," + customer.City + "," + customer.ZipCode);
-                Uri googleMapsApiUriRequest = new Uri("https://maps.googleapis.com/maps/api/geocode/json?&address=" + query + "&***REMOVED***");
+                Uri googleMapsApiUriRequest = new Uri("https://maps.googleapis.com/maps/api/geocode/json?&address=" + query + key);
 
                 var response = await HttpClient.GetAsync(googleMapsApiUriRequest);
                 response.EnsureSuccessStatusCode();
@@ -271,7 +273,8 @@ namespace TrashCollection.Controllers
         // Google Maps Embeded Api, No Long used, but kept for easy use/reference.
         public IActionResult AddressMap(int id)
         {
-
+            // Removed Secret, may require API request below to be adjusted for key + query.
+            string key = "*INSERT API KEY";
             Customer customer = _context.Customers.Where(c => c.Id == id).SingleOrDefault();
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var employee = _context.Employees.Where(c => c.IdentityUserId == userId).SingleOrDefault();
@@ -282,7 +285,7 @@ namespace TrashCollection.Controllers
             {
                 //mapUrl =  await GetGoogleMapsApiUrl(customer);
                 query = HttpUtility.UrlEncode(customer.StreetAddress + "," + customer.City + "," + customer.ZipCode);
-                googleMapsApiUrlRequest = "https://www.google.com/maps/embed/v1/place?***REMOVED***&q=" + query;
+                googleMapsApiUrlRequest = "https://www.google.com/maps/embed/v1/place?" + key + query;
             }
             catch
             {
